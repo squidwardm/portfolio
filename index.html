@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mustafa Özmen | Portfolio 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { background: #1a1a1a; color: #ccc; font-family: 'Inter', 'Segoe UI', sans-serif; height: 100vh; margin: 0; overflow: hidden; display: flex; flex-direction: column; }
+
+        .panel { background: #232323; border: 1px solid #0d0d0d; display: flex; flex-direction: column; overflow: hidden; border-radius: 2px; }
+        .panel-header {
+            background: linear-gradient(180deg, #3a3a3a 0%, #2e2e2e 100%);
+            color: #aaa; padding: 5px 10px; font-size: 10px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            border-bottom: 1px solid #0d0d0d;
+            display: flex; justify-content: space-between; align-items: center;
+            user-select: none; flex-shrink: 0;
+        }
+        .panel-header .active-tab { color: #e0e0e0; border-bottom: 2px solid #4f7fff; padding-bottom: 2px; }
+
+        .clip {
+            cursor: pointer; height: 22px; font-size: 7.5px; font-weight: 600;
+            display: flex; align-items: center; padding: 0 5px;
+            border-radius: 2px; white-space: nowrap;
+            transition: all 0.15s ease; border-left: 2px solid rgba(0,0,0,0.25);
+            position: relative; flex-shrink: 0; gap: 4px;
+            color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+        .clip img.clip-thumb {
+            width: 26px; height: 16px; object-fit: cover; border-radius: 1px;
+            flex-shrink: 0; opacity: 0.85;
+        }
+        .clip:hover { filter: brightness(1.15); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.4); z-index: 5; }
+        .clip:hover img.clip-thumb { opacity: 1; }
+        .clip-active { outline: 2px solid #fff; z-index: 10; border-left-color: #fff; box-shadow: 0 0 12px rgba(255,255,255,0.3); }
+
+        .clip::after {
+            content: attr(data-tooltip); position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%);
+            background: #111; color: #ddd; padding: 4px 8px; border-radius: 3px; font-size: 8px; font-weight: 400;
+            white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+            border: 1px solid #333; z-index: 50;
+        }
+        .clip:hover::after { opacity: 1; }
+
+        .t-social { background: linear-gradient(135deg, #d392ff 0%, #b86ce0 100%); color: #ddd; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+        .t-youtube { background: linear-gradient(135deg, #2d5a1a 0%, #1e4010 100%); color: #ddd; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+        .t-brand { background: linear-gradient(135deg, #4f7fff 0%, #3a5fd0 100%); color: #ddd; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+        .t-medical { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ddd; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+
+        .clip-active.t-social { color: #1a0a2e; }
+        .clip-active.t-youtube { background: linear-gradient(135deg, #7dce3e 0%, #5ba82a 100%) !important; color: #0a1a00; }
+        .clip-active.t-brand { color: #fff; }
+        .clip-active.t-medical { color: #1a0f00; }
+
+        .monitor { background: #000; width: 100%; height: 100%; position: relative; }
+        .monitor iframe { width: 100%; height: 100%; border: none; }
+
+        .scroll-area::-webkit-scrollbar { height: 8px; width: 5px; }
+        .scroll-area::-webkit-scrollbar-track { background: #141414; }
+        .scroll-area::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 4px; }
+        .scroll-area::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        .playhead {
+            position: absolute; left: 60px; top: 0; width: 2px; height: 100%;
+            background: #4f7fff; z-index: 20; pointer-events: none;
+            box-shadow: 0 0 8px rgba(79,127,255,0.5);
+        }
+        .playhead::before {
+            content: ''; position: absolute; top: 0; left: -4px;
+            border-left: 5px solid transparent; border-right: 5px solid transparent;
+            border-top: 7px solid #4f7fff;
+        }
+
+        .transport-btn { cursor: pointer; transition: color 0.15s, transform 0.1s; }
+        .transport-btn:hover { color: #fff; transform: scale(1.15); }
+
+        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+        .meta-label { color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .meta-value { color: #8ab4f8; font-size: 10px; }
+
+        .ruler {
+            height: 20px; background: #1a1a1a; border-bottom: 1px solid #2a2a2a;
+            display: flex; align-items: flex-end; padding-left: 60px;
+            font-size: 8px; color: #444; user-select: none; flex-shrink: 0;
+        }
+        .ruler-mark { border-left: 1px solid #2a2a2a; padding: 0 6px 2px; min-width: 70px; }
+
+        .contact-link { color: #666; transition: color 0.15s; text-decoration: none; }
+        .contact-link:hover { color: #8ab4f8; }
+
+        .track-label {
+            width: 56px; text-align: right; padding-right: 6px; flex-shrink: 0;
+            margin-left: -60px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+        }
+        .track-label .tl-name { font-size: 8px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+        .track-label .tl-sub { font-size: 6.5px; color: #3a3a3a; margin-top: 1px; }
+
+        .legend-dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 0.3s ease-out; }
+
+        .ec-tabs { display: flex; flex-shrink: 0; border-bottom: 1px solid #0d0d0d; }
+        .ec-tab {
+            flex: 1; text-align: center; padding: 6px 2px; font-size: 8px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px; color: #bbb;
+            cursor: pointer; transition: all 0.15s; position: relative; background: #272727;
+        }
+        .ec-tab:hover { color: #e0e0e0; background: #2a2a2a; }
+        .ec-tab.active { color: #fff; background: #232323; }
+        .ec-tab.active::after {
+            content: ''; position: absolute; bottom: 0; left: 15%; right: 15%;
+            height: 2px; background: #4f7fff; border-radius: 1px;
+        }
+        .ec-body { overflow-y: auto; flex: 1; }
+        .ec-body::-webkit-scrollbar { width: 4px; }
+        .ec-body::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
+
+        /* Mobile - Premiere Rush style */
+        @media (max-width: 768px) {
+            body { overflow: auto; height: auto; }
+
+            /* Main layout vertical */
+            #mainLayout { padding: 0; gap: 0; }
+            #topRow { flex-direction: column; min-height: auto; }
+
+            /* Menu bar compact */
+            #menuLinks { display: none; }
+
+            /* Hide EC resize handle on mobile */
+            #ecResizeHandle { display: none !important; }
+
+            /* EC panel below monitor */
+            #ecPanel { width: 100% !important; min-height: 200px; max-height: 300px; }
+
+            /* Timeline */
+            #timelinePanel { height: auto !important; min-height: 150px; }
+            #resizeHandle { display: none; }
+
+            /* Clips wider on mobile for touch */
+            .clip { height: 32px; font-size: 9px; padding: 0 8px; max-width: none !important; }
+            .clip img.clip-thumb { width: 36px; height: 22px; }
+
+            /* Bottom nav - Rush style */
+            .rush-nav { display: flex !important; }
+            .status-bar-desktop { display: none !important; }
+        }
+
+        @media (min-width: 769px) {
+            .rush-nav { display: none !important; }
+        }
+
+        .rush-nav {
+            background: #1a1a1a; border-top: 1px solid #333;
+            padding: 8px 0 12px; justify-content: space-around; align-items: center;
+            position: sticky; bottom: 0; z-index: 100;
+        }
+        .rush-nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 3px;
+            color: #666; font-size: 8px; cursor: pointer; transition: color 0.15s;
+        }
+        .rush-nav-item:hover, .rush-nav-item.active { color: #4f7fff; }
+        .rush-nav-item i { font-size: 16px; }
+
+        /* Meta lines in clip tab */
+        .meta-line { color: #999; font-size: 9px; padding: 1px 0; }
+        .meta-highlight { color: #f59e0b; font-size: 9px; font-weight: 600; padding: 2px 0; margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- Menu Bar -->
+    <div class="bg-[#1e1e1e] text-[10.5px] px-3 py-[5px] flex items-center gap-1 border-b border-black select-none" style="flex-shrink:0">
+        <div class="flex items-center gap-2 mr-4">
+            <span class="text-white font-bold bg-[#4f46e5] px-[6px] py-[1px] rounded text-[9px] tracking-tight">Pr</span>
+            <span class="text-gray-300 font-medium tracking-wide text-[10px]">Mustafa_Ozmen_Portfolio_2026.prproj</span>
+        </div>
+        <div id="menuLinks" class="flex gap-4 text-gray-500">
+            <span class="hover:text-gray-200 cursor-pointer">File</span>
+            <span class="hover:text-gray-200 cursor-pointer">Edit</span>
+            <span class="hover:text-gray-200 cursor-pointer">Clip</span>
+            <span class="hover:text-gray-200 cursor-pointer">Sequence</span>
+            <span class="hover:text-gray-200 cursor-pointer">Marker</span>
+            <span class="hover:text-gray-200 cursor-pointer">Graphics</span>
+            <span class="hover:text-gray-200 cursor-pointer">Window</span>
+            <span class="hover:text-gray-200 cursor-pointer">Help</span>
+        </div>
+        <div class="ml-auto flex items-center gap-4 text-gray-600 text-[9px]">
+            <a href="mailto:mustafaozmenn9@gmail.com" class="contact-link"><i class="fas fa-envelope mr-1"></i>mustafaozmenn9@gmail.com</a>
+            <a href="https://www.instagram.com/mustafaozmen" target="_blank" class="contact-link"><i class="fab fa-instagram mr-1"></i>Instagram</a>
+            <a href="https://www.youtube.com/@mustafaozmen" target="_blank" class="contact-link"><i class="fab fa-youtube mr-1"></i>YouTube</a>
+        </div>
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <div id="mainLayout" class="flex-1 flex flex-col overflow-hidden p-[3px] gap-[3px]">
+
+        <!-- TOP ROW: Monitor + Effect Controls -->
+        <div id="topRow" class="flex-1 flex gap-[3px] min-h-0">
+
+            <!-- Program Monitor -->
+            <div class="panel flex-1">
+                <div class="panel-header">
+                    <div class="flex items-center gap-4">
+                        <span class="opacity-40 cursor-pointer hover:opacity-70">Source</span>
+                        <span class="active-tab">Program</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[8px] text-gray-600">1920x1080</span>
+                        <span class="text-[8px] text-gray-600">23.976fps</span>
+                        <span id="timecode" class="text-blue-400 font-mono text-[10px] tracking-wider">00:00:00:00</span>
+                    </div>
+                </div>
+                <div class="flex-1 bg-black flex items-center justify-center p-2 min-h-0">
+                    <div class="monitor" style="max-height:100%; aspect-ratio: 16/9;">
+                        <iframe id="videoDisplay" src="https://www.youtube.com/embed/_l-ESNTuR9Y?rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EC Resize Handle -->
+            <div id="ecResizeHandle" class="ec-resize-handle" style="width: 5px; cursor: ew-resize; background: #0d0d0d; flex-shrink: 0; position: relative; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 2px; height: 30px; background: #444; border-radius: 1px;"></div>
+            </div>
+
+            <!-- Effect Controls (tabbed) -->
+            <div id="ecPanel" class="panel" style="flex: 1; min-width: 200px;">
+                <div class="panel-header" style="padding: 3px 8px;">
+                    <span style="font-size: 8px;">Effect Controls</span>
+                </div>
+                <div class="ec-tabs">
+                    <div class="ec-tab active" onclick="switchEC('clip', this)"><i class="fas fa-film text-[7px] mr-1"></i>Klip</div>
+                    <div class="ec-tab" onclick="switchEC('about', this)"><i class="fas fa-user text-[7px] mr-1"></i>Hakkimda</div>
+                    <div class="ec-tab" onclick="switchEC('skills', this)"><i class="fas fa-tools text-[7px] mr-1"></i>Teknik</div>
+                    <div class="ec-tab" onclick="switchEC('exp', this)"><i class="fas fa-briefcase text-[7px] mr-1"></i>Deneyim</div>
+                </div>
+                <div class="ec-body">
+                    <!-- Clip Info -->
+                    <div id="ec-clip" class="p-3 text-[9px]">
+                        <div id="metaDetails">
+                            <div class="text-gray-500 italic text-[10px] mb-3">Bir klip secin...</div>
+                            <div class="meta-grid">
+                                <div><span class="meta-label">Editor:</span></div>
+                                <div class="meta-value">Mustafa Ozmen</div>
+                                <div><span class="meta-label">Contact:</span></div>
+                                <div class="meta-value">mustafaozmenn9@gmail.com</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- About -->
+                    <div id="ec-about" class="p-4 text-[10px] leading-[1.7] text-gray-300 fade-up" style="display:none">
+                        <p class="mb-2"><strong class="text-white text-[11px]">Selamlar,</strong></p>
+                        <p class="mb-2">Lise yıllarımda hobi olarak başladığım meslek hayatıma 2016 yılında profesyonelliğe ilk adımlarımı attım. <span class="text-gray-100">Erciyes Üniversitesi İletişim Fakültesi</span> mezunuyum.</p>
+                        <p class="mb-2">2016'da YouTube kanalı açtım, <span class="text-blue-400 font-semibold">2M+</span> görüntülenme aldım. Stajımı <span class="text-gray-100">BaBaLa TV</span>'de yaptım.</p>
+                        <p class="mb-2"><span class="text-gray-100">United World</span>'de 4 dilde uluslararası gayrimenkul video içerikleri ürettim. 3 kişilik ekip yönettim.</p>
+                        <p class="mb-2"><span class="text-gray-100">Tepkikolik</span>, <span class="text-gray-100">Literat</span> kanallarında ve <span class="text-gray-100">Creator Station</span>'da görev aldım. 4 kişilik ekip yönettim, 2 stajyer yetiştirdim.</p>
+                        <p>Freelancer olarak yeni projelere her zaman açığım.</p>
+                    </div>
+                    <!-- Skills -->
+                    <div id="ec-skills" class="p-4 text-[10px] fade-up" style="display:none">
+                        <div class="text-[8px] text-gray-500 font-bold uppercase mb-2 tracking-wider">Kamera</div>
+                        <div class="space-y-1 mb-3">
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-video text-blue-400 mr-1 text-[7px]"></i>Sony FX Serisi</div>
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-video text-blue-400 mr-1 text-[7px]"></i>Canon C Serisi</div>
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-helicopter text-blue-400 mr-1 text-[7px]"></i>DJI Drone</div>
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-lightbulb text-blue-400 mr-1 text-[7px]"></i>Studio Lighting</div>
+                        </div>
+                        <div class="text-[8px] text-gray-500 font-bold uppercase mb-2 tracking-wider">Post-Prodüksiyon</div>
+                        <div class="space-y-1 mb-3">
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-cut text-green-400 mr-1 text-[7px]"></i>Adobe Premiere Pro</div>
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-magic text-yellow-400 mr-1 text-[7px]"></i>After Effects</div>
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-robot text-cyan-400 mr-1 text-[7px]"></i>AI Transitions</div>
+                        </div>
+                        <div class="text-[8px] text-gray-500 font-bold uppercase mb-2 tracking-wider">Beceriler</div>
+                        <div class="space-y-1">
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-film text-orange-400 mr-1 text-[7px]"></i>Color Grading</div>
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-music text-pink-400 mr-1 text-[7px]"></i>Ses Miksajı</div>
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-users text-blue-300 mr-1 text-[7px]"></i>Ekip Yönetimi</div>
+                            <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-camera text-red-400 mr-1 text-[7px]"></i>Prodüksiyon</div>
+                        </div>
+                    </div>
+                    <!-- Experience -->
+                    <div id="ec-exp" class="p-4 text-[10px] fade-up" style="display:none">
+                        <div class="space-y-3">
+                            <div class="border-l-2 border-blue-500 pl-2">
+                                <div class="text-white font-semibold text-[10px]">Freelancer</div>
+                                <div class="text-blue-400 text-[8px]">2025 - Devam Ediyor</div>
+                            </div>
+                            <div class="border-l-2 border-purple-500 pl-2">
+                                <div class="text-white font-semibold text-[10px]">Creator Station</div>
+                                <div class="text-purple-400 text-[8px]">2025</div>
+                                <div class="text-gray-500 text-[8px]">Influencer marketing, 4 kişilik ekip</div>
+                            </div>
+                            <div class="border-l-2 border-green-500 pl-2">
+                                <div class="text-white font-semibold text-[10px]">Tepkikolik & Literat</div>
+                                <div class="text-green-400 text-[8px]">2024</div>
+                                <div class="text-gray-500 text-[8px]">YouTube prodüksiyon + post-prodüksiyon</div>
+                            </div>
+                            <div class="border-l-2 border-yellow-500 pl-2">
+                                <div class="text-white font-semibold text-[10px]">United World</div>
+                                <div class="text-yellow-400 text-[8px]">2021 - 2024 | Antalya</div>
+                                <div class="text-gray-500 text-[8px]">4 dilde gayrimenkul video, 3 kişilik ekip</div>
+                            </div>
+                            <div class="border-l-2 border-red-500 pl-2">
+                                <div class="text-white font-semibold text-[10px]">WL Tv - Antalya</div>
+                                <div class="text-red-400 text-[8px]">2019 - 2021</div>
+                            </div>
+                            <div class="border-l-2 border-gray-500 pl-2">
+                                <div class="text-white font-semibold text-[10px]">BaBaLa TV (Staj)</div>
+                                <div class="text-gray-500 text-[8px]">2018</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resize Handle -->
+        <div id="resizeHandle" style="height: 5px; cursor: ns-resize; background: #0d0d0d; flex-shrink: 0; position: relative;">
+            <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 30px; height: 2px; background: #444; border-radius: 1px;"></div>
+        </div>
+
+        <!-- Timeline -->
+        <div id="timelinePanel" class="panel" style="height: 34%; flex-shrink: 0;">
+            <div class="panel-header">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-film text-[8px] text-blue-400"></i>
+                    <span>Portfolyo_Sequence</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3 text-[7.5px] text-gray-500 font-normal normal-case tracking-normal">
+                        <span class="flex items-center gap-1"><span class="legend-dot" style="background:#f59e0b"></span>Medikal</span>
+                        <span class="flex items-center gap-1"><span class="legend-dot" style="background:#4f7fff"></span>Marka</span>
+                        <span class="flex items-center gap-1"><span class="legend-dot" style="background:#6dbe30"></span>YouTube</span>
+                        <span class="flex items-center gap-1"><span class="legend-dot" style="background:#c47aee"></span>Influencer</span>
+                    </div>
+                    <span class="text-[8px] text-gray-600">41 clips</span>
+                    <i class="fas fa-magnet text-[8px] text-blue-400 opacity-50" title="Snap"></i>
+                </div>
+            </div>
+
+            <div class="ruler">
+                <div class="ruler-mark">00:00</div><div class="ruler-mark">01:00</div><div class="ruler-mark">02:00</div>
+                <div class="ruler-mark">03:00</div><div class="ruler-mark">04:00</div><div class="ruler-mark">05:00</div>
+                <div class="ruler-mark">06:00</div><div class="ruler-mark">07:00</div><div class="ruler-mark">08:00</div>
+                <div class="ruler-mark">09:00</div><div class="ruler-mark">10:00</div><div class="ruler-mark">11:00</div>
+                <div class="ruler-mark">12:00</div><div class="ruler-mark">13:00</div><div class="ruler-mark">14:00</div>
+            </div>
+
+            <div class="flex-1 scroll-area overflow-x-auto overflow-y-auto py-2 px-3 relative" style="background: #181818;">
+                <div class="playhead"></div>
+
+                <div class="space-y-[5px]" style="min-width: 3600px; margin-left: 60px;">
+
+                    <!-- V3: Marka + Medikal -->
+                    <div class="flex items-center gap-[3px]">
+                        <div class="track-label"><span class="tl-name">V3</span><span class="tl-sub">Marka</span></div>
+                        <div class="clip t-brand" data-tooltip="Marka Prodüksiyonu" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('ROMj6kPXPWE','Vokal Akademi Tanıtım','Freelance / Marka Prodüksiyonu',this)">Vokal Akademi</div>
+                        <div class="clip t-brand" data-tooltip="Tourism / Commercial" data-meta="Marka Reklam Çekimi|Işık|Kamera" onclick="play('jONsvqDPdQU','Corendon Hotels Kemer 1','Freelance / Tourism / Commercial',this)">Corendon Hotels 1</div>
+                        <div class="clip t-brand" data-tooltip="Tourism / Commercial" data-meta="Marka Reklam Çekimi|Işık|Kamera" onclick="play('900MV2jZ7Iw','Corendon Hotels Kemer 2','Freelance / Tourism / Commercial',this)">Corendon Hotels 2</div>
+                        <div class="clip t-brand" data-tooltip="Tourism / Commercial" data-meta="Marka Reklam Çekimi|Işık|Kamera" onclick="play('jFYEJ0TztQE','Corendon Hotels Kemer 3','Freelance / Tourism / Commercial',this)">Corendon Hotels 3</div>
+                        <div class="clip t-brand" data-tooltip="Tourism / Commercial" data-meta="Marka Reklam Çekimi|Işık|Kamera" onclick="play('AqOIdGSByDU','Corendon Hotels Kemer 4','Freelance / Tourism / Commercial',this)">Corendon Hotels 4</div>
+                        <div class="clip t-brand" data-tooltip="Kurgu / Mood Film" data-meta="Sosyal Medya Trend İçerik|Çekim|Kurgu|Ses" onclick="play('VW8gbc3aZXY','Reborn Cocktail','Freelance / Kurgu / Mood Film',this)">Reborn Cocktail</div>
+                        <div class="clip t-brand" data-tooltip="İnşaat / Tanıtım" data-meta="Youtube İçerik|Kurgu" onclick="play('XT3XNbSTWAc','Akademik Link İnşaat Gezmesi','Freelance / İnşaat / Tanıtım',this)">Akademik Link İnşaat</div>
+                        <div class="clip t-brand" data-tooltip="Düğün Hikayesi / Kısa Film" data-meta="Kurgu" onclick="play('Fv7ENVYXYEY','Düğün Hikayesi - Kısa','Freelance / Düğün Filmi',this)">Düğün Hikayesi</div>
+                        <div class="clip t-medical" data-tooltip="Medical / Prodüksiyon" data-meta="Sosyal Medya İçerik|Kamera|Işık|Ses|Renk|Kurgu" onclick="play('JKEOJaOgxno','Dr. Kaan Kalem | Annelik Estetiği','Medical / Prodüksiyon + Post-Prodüksiyon',this)">Dr. Kaan Kalem - Annelik Estetiği</div>
+                        <div class="clip t-medical" data-tooltip="Medical / Prodüksiyon" data-meta="Sosyal Medya İçerik|Kamera|Işık|Ses|Renk|Kurgu" onclick="play('IbjzFYBAcM4','Dr. Kaan Kalem | Jinekomasti','Medical / Prodüksiyon + Post-Prodüksiyon',this)">Dr. Kaan Kalem - Jinekomasti</div>
+                        <div class="clip t-medical" data-tooltip="Diş Kliniği / Hasta Hikayesi" data-meta="Sosyal Medya İçerik|Kamera|Işık|Ses|Renk|Kurgu" onclick="play('cc6-5xeHsts','Ballıpınar Diş Kliniği - Hasta Hikayesi','Medical / Prodüksiyon + Kurgu',this)">Ballıpınar Diş Kliniği</div>
+                        <div class="clip t-medical" data-tooltip="Medical / Technical Edit" data-meta="Sosyal Medya İçerik|Kamera|Işık|Ses|Renk|Kurgu" onclick="play('orSxQXxAjjU','Ümit Hardal Ameliyat','Medical / Technical Edit',this)">Ümit Hardal Ameliyat</div>
+                        <div class="clip t-medical" data-tooltip="Medical / Konu Anlatımı" data-meta="Sosyal Medya İçerik|Kamera|Işık|Ses|Renk|Kurgu" onclick="play('MMS97vDNBNs','Ümit Hardal Konu Anlatımı','Medical / Eğitim İçeriği',this)">Ümit Hardal Konu Anlatımı</div>
+                    </div>
+
+                    <!-- V2: YouTube -->
+                    <div class="flex items-center gap-[3px]">
+                        <div class="track-label"><span class="tl-name">V2</span><span class="tl-sub">YouTube</span></div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Prodüksiyon" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('_l-ESNTuR9Y','CİNAYET POLİSİ, CİNAYET DAVASI ÇÖZÜYOR','Tepkikolik / Prodüksiyon + Post-Prodüksiyon',this)">CİNAYET POLİSİ CİNAYET DAVASI ÇÖZÜYOR</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Post-Prodüksiyon" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('MmHxiVeNi5Y','ŞEFLER, EN KÖTÜ YEMEKLERİ DENİYOR!','Tepkikolik / Post-Prodüksiyon',this)">ŞEFLER EN KÖTÜ YEMEKLERİ DENİYOR!</div>
+                        <div class="clip t-youtube" data-tooltip="Literat TV / Kurgu" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('5bAgW5dI6xc','SPORCULAR, DİZİLERDEKİ SPOR SAHNELERİNİ İZLİYOR!','Literat TV / Kurgu',this)">SPORCULAR SPOR SAHNELERİNİ İZLİYOR!</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Kurgu" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('kaghSsS0-R8','KOMEDYENLERİN EEEEN ÇOK İZLENEN VİDEOLARI!','Tepkikolik / Kurgu',this)">KOMEDYENLERİN EN ÇOK İZLENEN VİDEOLARI!</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / 10. Yıl Özel" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('M8wMNMtrc8k','TEPKİKOLİK NASIL ÇEKİLİYOR? 10. YIL ÖZEL','Tepkikolik / Özel Prodüksiyon',this)">TEPKİKOLİK NASIL ÇEKİLİYOR?</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Prodüksiyon" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('Gk9Kot9bML0','BU MÜZİK ALETLERİNİ İLK KEZ ÇALDILAR! w/ Kargo','Tepkikolik / Prodüksiyon',this)">MÜZİK ALETLERİNİ İLK KEZ ÇALDILAR!</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Post-Prodüksiyon" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('FWcdr3fDfuk','ŞEFLER, TK EKİBİNİN YAPTIĞI YEMEKLERİ YİYOR!','Tepkikolik / Post-Prodüksiyon',this)">ŞEFLER TK EKİBİNİN YEMEKLERİNİ YİYOR!</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses" onclick="play('FqfzHzvQoTI','İLK KEZ RENKLERİ GÖRDÜLER!','Tepkikolik / Prodüksiyon + Post-Prodüksiyon',this)">İLK KEZ RENKLERİ GÖRDÜLER!</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Kurgu" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('fgkYNwVTNIc','SAT KOMANDOSU ASKERİ EĞİTİM SAHNELERİNİ İZLİYOR!','Tepkikolik / Kurgu',this)">SAT KOMANDOSU ASKERİ SAHNELERİ İZLİYOR!</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Post-Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses" onclick="play('SKbdjbtyOfQ','ŞEF, DÜŞÜK PUANLI RESTORANLARI DENİYOR!','Tepkikolik / Post-Prodüksiyon',this)">ŞEF DÜŞÜK PUANLI RESTORANLARI DENİYOR!</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Kurgu" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('PiCn6AH8FCI','KUMARHANE MÜDÜRÜ, TÜRK KUMARHANE SAHNELERİNİ İZLİYOR!','Tepkikolik / Kurgu',this)">KUMARHANE MÜDÜRÜ SAHNELERİ İZLİYOR!</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Post-Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('g1KCuLO667o','ACİL TIP DOKTORU OYUNLARDAKİ YARALANMA SAHNELERİNİ İZLİYOR!','Tepkikolik / Post-Prodüksiyon',this)">ACİL TIP DOKTORU YARALANMA SAHNELERİ</div>
+                        <div class="clip t-youtube" data-tooltip="Tepkikolik / Kurgu" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('hPM-5mSr9l8','TARİHÇİ ATATÜRK SAHNELERİNİ İZLİYOR! w/ Selim Erdoğan','Tepkikolik / Kurgu',this)">TARİHÇİ ATATÜRK SAHNELERİNİ İZLİYOR!</div>
+                        <div class="clip t-youtube" data-tooltip="Literat / Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('lXLCfBTsELs','ÇOCUKLAR SAĞIRA SORUYOR! w/ Melek Morgil','Literat / Prodüksiyon + Kurgu',this)">ÇOCUKLAR SAĞIRA SORUYOR!</div>
+                        <div class="clip t-youtube" data-tooltip="Orkun Işıtmak / Post-Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('HQceVi0uUgo','150 KİLO KARPUZ YEDİK! @orkunisitmak','Orkun Işıtmak / Post-Prodüksiyon',this)">150 KİLO KARPUZ YEDİK!</div>
+                        <div class="clip t-youtube" data-tooltip="Post-Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('iI--9EwRVEU','30 KİLO YOĞURT YEDİK! @1453harunn','Post-Prodüksiyon',this)">30 KİLO YOĞURT YEDİK!</div>
+                    </div>
+
+                    <!-- V1: Influencer -->
+                    <div class="flex items-center gap-[3px]">
+                        <div class="track-label"><span class="tl-name">V1</span><span class="tl-sub">Influencer</span></div>
+                        <div class="clip t-social" data-tooltip="Creator Station / Dikey Kurgu" data-meta="Dekor|Işık|Kamera Kurulumu|~Farklı platformlarda toplamda 10m+ görüntülenme" onclick="play('LtEmjQUntb8','devamettikce | SM İçerik','Creator Station / Dikey Kurgu / Shorts',this)">devamettikce | SM İçerik</div>
+                        <div class="clip t-social" data-tooltip="Post-Prodüksiyon / Vlog" data-meta="Dekor|Işık|Kamera|Kurgu|Renk" onclick="play('UXaVPOiEZbg','Merve Özkaynak | Yurtdışı Alışveriş','Creator Station / Post-Prodüksiyon',this)">Merve Özkaynak | Yurtdışı Alışveriş</div>
+                        <div class="clip t-social" data-tooltip="Social Media / Influencer" data-meta="Dekor|Işık|Kamera|Kurgu|Renk|~Instagram 3,5m+ izlenme" onclick="play('HgvzNM5JrCg','Merve Özkaynak x Benefit','Creator Station / Social Media',this)">Merve Özkaynak x Benefit</div>
+                        <div class="clip t-social" data-tooltip="Reklam / Post-Prodüksiyon" data-meta="Işık|Kamera|Briefi Doğrultusunda Senaryo Eklemeleri|~Farklı platformlarda toplamda 10m+ görüntülenme" onclick="play('_oF7F-x0S64','Oktay Şenol x Vileda','Creator Station / Reklam',this)">Oktay Şenol x Vileda</div>
+                        <div class="clip t-social" data-tooltip="Reklam / Post-Prodüksiyon" data-meta="Işık|Kamera|Briefi Doğrultusunda Senaryo Eklemeleri|~Farklı platformlarda toplamda 10m+ görüntülenme" onclick="play('GsCaQvnclxU','Oktay Şenol x Vileda 2','Creator Station / Reklam',this)">Oktay Şenol x Vileda 2</div>
+                        <div class="clip t-social" data-tooltip="Komedi Kurgusu / Reels" data-meta="Marka İşbirliği|Dekor|Kamera|Ses|Renk" onclick="play('yECkO4ozPas','Mahsun Karaca x Happn','Creator Station / Komedi',this)">Mahsun Karaca x Happn</div>
+                        <div class="clip t-social" data-tooltip="Reels / Kurgu" data-meta="Sosyal Medya İçerik|Dekor|Kamera|Işık|Ses|Renk|~Instagram 600B+ görüntülenme" onclick="play('PBn9yjOaBHA','Merve Özkaynak | Parfüm Önerileri','Creator Station / Reels',this)">Merve Özkaynak | Parfüm Önerileri</div>
+                        <div class="clip t-social" data-tooltip="Reels / Kurgu" data-meta="Sosyal Medya İçerik|Dekor|Kamera|Işık|Ses|Renk|~Instagram 1M+ görüntülenme" onclick="play('I6fLRyLZqFc','Merve Özkaynak | Favori Gözlükler','Creator Station / Reels',this)">Merve Özkaynak | Favori Gözlükler</div>
+                        <div class="clip t-social" data-tooltip="Kampanya Filmi" data-meta="Güzellik Merkezi Bayram Kampanyası|Çekim|Kurgu|Renk|Ses" onclick="play('Z7dWItmgtgI','Nil Tellioğlu - Bayram Kampanyası','Creator Station / Kampanya',this)">Nil Tellioğlu - Bayram Kampanyası</div>
+                        <div class="clip t-brand" data-tooltip="United World / Gayrimenkul" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('au-8FLeyo8s','United World | Deniz Manzaralı Daireler','United World / Real Estate / Alanya',this)">United World - Sea View</div>
+                        <div class="clip t-brand" data-tooltip="United World / Gayrimenkul" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('PcpV__ZjXaw','United World | Luxury Villa Döşemealtı','United World / Real Estate / Antalya',this)">United World - Villa Döşemealtı</div>
+                        <div class="clip t-brand" data-tooltip="United World / Gayrimenkul" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('APEhFR-iCa8','United World | Villa Antalya Döşemealtı','United World / Real Estate / Antalya',this)">United World - Villa Antalya</div>
+                    </div>
+
+                    <!-- A1 -->
+                    <div class="flex items-center gap-[3px] pt-1">
+                        <div class="track-label" style="opacity:0.3"><span class="tl-name">A1</span></div>
+                        <div class="h-[5px] rounded-sm flex-1 max-w-[6800px]" style="background: repeating-linear-gradient(90deg, rgba(34,197,94,0.12) 0px, rgba(34,197,94,0.22) 2px, rgba(34,197,94,0.06) 4px);"></div>
+                    </div>
+                    <!-- A2 -->
+                    <div class="flex items-center gap-[3px]">
+                        <div class="track-label" style="opacity:0.2"><span class="tl-name">A2</span></div>
+                        <div class="h-[3px] rounded-sm flex-1 max-w-[6800px]" style="background: repeating-linear-gradient(90deg, rgba(34,197,94,0.06) 0px, rgba(34,197,94,0.12) 2px, rgba(34,197,94,0.03) 4px);"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar (Desktop) -->
+    <div class="status-bar-desktop bg-[#1a1a1a] border-t border-black text-[9px] px-4 py-[3px] justify-between text-gray-600 select-none" style="flex-shrink:0">
+        <div class="flex gap-4">
+            <span><i class="fas fa-circle text-green-500 text-[6px] mr-1"></i>Ready</span>
+            <span>Sequence: 1920x1080 | 23.976fps</span>
+        </div>
+        <div class="flex gap-4">
+            <span>41 items in timeline</span>
+            <span>H.264 High Profile</span>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Nav (Rush style) -->
+    <div class="rush-nav">
+        <div class="rush-nav-item active" onclick="mobileTab('timeline')"><i class="fas fa-film"></i><span>Sekans</span></div>
+        <div class="rush-nav-item" onclick="mobileTab('clip')"><i class="fas fa-play-circle"></i><span>Klip</span></div>
+        <div class="rush-nav-item" onclick="mobileTab('about')"><i class="fas fa-user"></i><span>Hakkımda</span></div>
+        <div class="rush-nav-item" onclick="mobileTab('skills')"><i class="fas fa-tools"></i><span>Teknik</span></div>
+        <div class="rush-nav-item" onclick="mobileTab('exp')"><i class="fas fa-briefcase"></i><span>Deneyim</span></div>
+    </div>
+
+    <script>
+        let currentClipIndex = -1;
+        const allClips = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.clip').forEach((el, i) => {
+                el.dataset.index = i;
+                allClips.push(el);
+                // Extract video ID from onclick and add thumbnail
+                const onclick = el.getAttribute('onclick');
+                const match = onclick && onclick.match(/play\('([^']+)'/);
+                if (match) {
+                    const img = document.createElement('img');
+                    img.className = 'clip-thumb';
+                    img.src = `https://img.youtube.com/vi/${match[1]}/default.jpg`;
+                    img.alt = '';
+                    img.loading = 'lazy';
+                    el.insertBefore(img, el.firstChild);
+                }
+            });
+        });
+
+        function play(id, title, details, clipEl) {
+            const player = document.getElementById('videoDisplay');
+            player.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+
+            // Parse metadata from data-meta attribute
+            const meta = clipEl ? clipEl.dataset.meta : '';
+            const lines = meta.split('|');
+            let metaHtml = '';
+            lines.forEach(line => {
+                if (line.startsWith('~')) {
+                    metaHtml += `<div class="meta-highlight"><i class="fas fa-eye text-[7px] mr-1"></i>${line.substring(1)}</div>`;
+                } else {
+                    metaHtml += `<div class="meta-line"><i class="fas fa-chevron-right text-[6px] text-gray-600 mr-1"></i>${line}</div>`;
+                }
+            });
+
+            document.getElementById('metaDetails').innerHTML = `
+                <div class="text-white font-semibold text-[11px] mb-1 truncate">${title}</div>
+                <div class="text-blue-400 text-[9px] mb-3">${details}</div>
+                <div class="mb-3">${metaHtml}</div>
+            `;
+
+            // Switch to Klip tab
+            document.querySelectorAll('.ec-tab')[0].click();
+
+            document.querySelectorAll('.clip').forEach(c => c.classList.remove('clip-active'));
+            if (clipEl) {
+                clipEl.classList.add('clip-active');
+                currentClipIndex = parseInt(clipEl.dataset.index);
+            }
+
+            const m = String(Math.floor(Math.random() * 12)).padStart(2, '0');
+            const s = String(Math.floor(Math.random() * 59)).padStart(2, '0');
+            const f = String(Math.floor(Math.random() * 24)).padStart(2, '0');
+            document.getElementById('timecode').innerText = `00:${m}:${s}:${f}`;
+        }
+
+        function prevClip() {
+            if (currentClipIndex > 0) { currentClipIndex--; allClips[currentClipIndex].click(); allClips[currentClipIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); }
+        }
+        function nextClip() {
+            if (currentClipIndex < allClips.length - 1) { currentClipIndex++; allClips[currentClipIndex].click(); allClips[currentClipIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); }
+        }
+
+        function switchEC(name, el) {
+            ['clip', 'about', 'skills', 'exp'].forEach(t => {
+                document.getElementById('ec-' + t).style.display = t === name ? 'block' : 'none';
+            });
+            document.querySelectorAll('.ec-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function mobileTab(name) {
+            document.querySelectorAll('.rush-nav-item').forEach(i => i.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            if (name === 'timeline') return;
+            const tabMap = { clip: 0, about: 1, skills: 2, exp: 3 };
+            document.querySelectorAll('.ec-tab')[tabMap[name]].click();
+            document.getElementById('ecPanel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'l') nextClip();
+            if (e.key === 'ArrowLeft' || e.key === 'j') prevClip();
+        });
+
+        // Timeline resize
+        const handle = document.getElementById('resizeHandle');
+        const timeline = document.getElementById('timelinePanel');
+        const container = timeline.parentElement;
+        let dragging = false;
+
+        handle.addEventListener('mousedown', (e) => {
+            dragging = true;
+            document.body.style.cursor = 'ns-resize';
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!dragging) return;
+            const rect = container.getBoundingClientRect();
+            const y = e.clientY - rect.top;
+            const pct = ((rect.height - (y - 5)) / rect.height) * 100;
+            const clamped = Math.min(70, Math.max(15, pct));
+            timeline.style.height = clamped + '%';
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (dragging) {
+                dragging = false;
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            }
+            if (ecDragging) {
+                ecDragging = false;
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            }
+        });
+
+        // EC panel resize
+        const ecHandle = document.getElementById('ecResizeHandle');
+        const ecPanel = document.getElementById('ecPanel');
+        const ecContainer = ecPanel.parentElement;
+        let ecDragging = false;
+
+        ecHandle.addEventListener('mousedown', (e) => {
+            ecDragging = true;
+            document.body.style.cursor = 'ew-resize';
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!ecDragging) return;
+            const rect = ecContainer.getBoundingClientRect();
+            const w = rect.right - e.clientX;
+            const clamped = Math.min(500, Math.max(180, w));
+            ecPanel.style.width = clamped + 'px';
+        });
+    </script>
+</body>
+</html>
