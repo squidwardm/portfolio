@@ -169,6 +169,54 @@
         /* Meta lines in clip tab */
         .meta-line { color: #999; font-size: 9px; padding: 1px 0; }
         .meta-highlight { color: #f59e0b; font-size: 9px; font-weight: 600; padding: 2px 0; margin-top: 4px; }
+
+        /* Timeline Zoom Functionality */
+        .timeline-content-wrapper {
+            transform-origin: 0 0;
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        #zoomControls {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            margin-left: auto;
+            padding-right: 8px;
+        }
+
+        #zoomControls button {
+            background: transparent;
+            border: 1px solid #333;
+            color: #666;
+            cursor: pointer;
+            width: 22px;
+            height: 20px;
+            font-size: 9px;
+            transition: all 0.15s;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #zoomControls button:hover:not(:disabled) {
+            color: #8ab4f8;
+            border-color: #4f7fff;
+        }
+
+        #zoomControls button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #zoomLevel {
+            font-size: 8px;
+            color: #666;
+            min-width: 28px;
+            text-align: center;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -342,18 +390,25 @@
                 </div>
             </div>
 
-            <div class="ruler">
+            <div class="ruler" id="ruler">
                 <div class="ruler-mark">00:00</div><div class="ruler-mark">01:00</div><div class="ruler-mark">02:00</div>
                 <div class="ruler-mark">03:00</div><div class="ruler-mark">04:00</div><div class="ruler-mark">05:00</div>
                 <div class="ruler-mark">06:00</div><div class="ruler-mark">07:00</div><div class="ruler-mark">08:00</div>
                 <div class="ruler-mark">09:00</div><div class="ruler-mark">10:00</div><div class="ruler-mark">11:00</div>
                 <div class="ruler-mark">12:00</div><div class="ruler-mark">13:00</div><div class="ruler-mark">14:00</div>
+                <div id="zoomControls">
+                    <button id="zoomOutBtn" title="Zoom Out (Ctrl+-)"><i class="fas fa-minus"></i></button>
+                    <span id="zoomLevel">100%</span>
+                    <button id="zoomInBtn" title="Zoom In (Ctrl++)"><i class="fas fa-plus"></i></button>
+                    <button id="zoomResetBtn" title="Reset (Ctrl+0)"><i class="fas fa-redo-alt"></i></button>
+                </div>
             </div>
 
             <div class="flex-1 scroll-area overflow-x-auto overflow-y-auto py-2 px-3 relative" style="background: #181818;">
                 <div class="playhead"></div>
 
-                <div class="space-y-[5px]" style="min-width: 3600px; margin-left: 60px;">
+                <div class="timeline-content-wrapper">
+                    <div class="space-y-[5px]" style="min-width: 3600px; margin-left: 60px;">
 
                     <!-- V3: Marka + Medikal -->
                     <div class="flex items-center gap-[3px]">
@@ -421,6 +476,7 @@
                         <div class="track-label" style="opacity:0.2"><span class="tl-name">A2</span></div>
                         <div class="h-[3px] rounded-sm flex-1 max-w-[6800px]" style="background: repeating-linear-gradient(90deg, rgba(34,197,94,0.06) 0px, rgba(34,197,94,0.12) 2px, rgba(34,197,94,0.03) 4px);"></div>
                     </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -451,6 +507,85 @@
         let currentClipIndex = -1;
         const allClips = [];
 
+        // Zoom state variables
+        let currentZoom = 1.0;
+        const zoomStep = 0.1;
+        let previousZoom = 1.0;
+
+        // Core zoom function
+        function setZoom(newLevel) {
+            previousZoom = currentZoom;
+            currentZoom = Math.max(0.5, Math.min(2.0, newLevel));
+
+            const scrollArea = document.querySelector('.scroll-area');
+            const oldScroll = scrollArea.scrollLeft;
+            const contentWrapper = document.querySelector('.timeline-content-wrapper');
+
+            // Apply transform scale
+            contentWrapper.style.transform = `scale(${currentZoom})`;
+
+            // Update ruler marks proportionally
+            updateRulerMarks(currentZoom);
+
+            // Restore scroll position proportionally
+            setTimeout(() => {
+                scrollArea.scrollLeft = (oldScroll * currentZoom) / previousZoom;
+            }, 0);
+
+            // Keep active clip visible
+            const activeClip = document.querySelector('.clip-active');
+            if (activeClip) {
+                activeClip.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
+            }
+
+            // Save to localStorage
+            try {
+                localStorage.setItem('timeline-zoom-level', currentZoom);
+            } catch (e) {
+                // Silently fail if localStorage unavailable
+            }
+
+            // Update button states and display
+            updateZoomButtonStates();
+            updateZoomDisplay();
+        }
+
+        function zoomIn() {
+            setZoom(currentZoom + zoomStep);
+        }
+
+        function zoomOut() {
+            setZoom(currentZoom - zoomStep);
+        }
+
+        function resetZoom() {
+            setZoom(1.0);
+        }
+
+        function updateRulerMarks(zoomLevel) {
+            const marks = document.querySelectorAll('.ruler-mark');
+            marks.forEach(mark => {
+                mark.style.minWidth = (70 * zoomLevel) + 'px';
+            });
+        }
+
+        function updateZoomDisplay() {
+            const zoomLabel = document.getElementById('zoomLevel');
+            if (zoomLabel) {
+                zoomLabel.textContent = Math.round(currentZoom * 100) + '%';
+            }
+        }
+
+        function updateZoomButtonStates() {
+            const zoomInBtn = document.getElementById('zoomInBtn');
+            const zoomOutBtn = document.getElementById('zoomOutBtn');
+
+            if (zoomInBtn && zoomOutBtn) {
+                zoomInBtn.disabled = currentZoom >= 2.0;
+                zoomOutBtn.disabled = currentZoom <= 0.5;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.clip').forEach((el, i) => {
                 el.dataset.index = i;
@@ -467,6 +602,23 @@
                     el.insertBefore(img, el.firstChild);
                 }
             });
+
+            // Initialize zoom from localStorage
+            try {
+                const savedZoom = localStorage.getItem('timeline-zoom-level');
+                if (savedZoom) {
+                    setZoom(parseFloat(savedZoom));
+                } else {
+                    setZoom(1.0);
+                }
+            } catch (e) {
+                setZoom(1.0);
+            }
+
+            // Attach button event listeners
+            document.getElementById('zoomInBtn').addEventListener('click', zoomIn);
+            document.getElementById('zoomOutBtn').addEventListener('click', zoomOut);
+            document.getElementById('zoomResetBtn').addEventListener('click', resetZoom);
         });
 
         function play(id, title, details, clipEl) {
@@ -533,7 +685,34 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === 'l') nextClip();
             if (e.key === 'ArrowLeft' || e.key === 'j') prevClip();
+
+            // Zoom keyboard shortcuts
+            if ((e.ctrlKey || e.metaKey) && e.key === '+') {
+                e.preventDefault();
+                zoomIn();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === '-') {
+                e.preventDefault();
+                zoomOut();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === '0') {
+                e.preventDefault();
+                resetZoom();
+            }
+            if (e.shiftKey && e.key === 'z') {
+                e.preventDefault();
+                resetZoom();
+            }
         });
+
+        // Mouse wheel zoom
+        document.addEventListener('wheel', (e) => {
+            if ((e.ctrlKey || e.metaKey) && !e.altKey) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                setZoom(currentZoom + delta);
+            }
+        }, { passive: false });
 
         // Timeline resize
         const handle = document.getElementById('resizeHandle');
