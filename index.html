@@ -172,9 +172,7 @@
 
         /* Timeline Zoom Functionality */
         .timeline-content-wrapper {
-            transform-origin: left center;
-            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
+            transition: min-width 0.15s ease;
         }
 
         #zoomControls {
@@ -513,16 +511,25 @@
         let previousZoom = 1.0;
 
         // Core zoom function
+        const baseMinWidth = 3600;
+        const baseClipWidths = { social: 150, youtube: 120, brand: 140, medical: 140 };
+
         function setZoom(newLevel) {
             previousZoom = currentZoom;
             currentZoom = Math.max(0.5, Math.min(2.0, newLevel));
 
             const scrollArea = document.querySelector('.scroll-area');
             const oldScroll = scrollArea.scrollLeft;
-            const contentWrapper = document.querySelector('.timeline-content-wrapper');
+            const contentDiv = document.querySelector('.timeline-content-wrapper > div');
 
-            // Apply transform scaleX (horizontal only, prevents vertical expansion)
-            contentWrapper.style.transform = `scaleX(${currentZoom})`;
+            // Change min-width dynamically (no transform = no distortion)
+            contentDiv.style.minWidth = (baseMinWidth * currentZoom) + 'px';
+
+            // Scale clip max-widths proportionally
+            document.querySelectorAll('.t-social').forEach(c => c.style.maxWidth = (baseClipWidths.social * currentZoom) + 'px');
+            document.querySelectorAll('.t-youtube').forEach(c => c.style.maxWidth = (baseClipWidths.youtube * currentZoom) + 'px');
+            document.querySelectorAll('.t-brand').forEach(c => c.style.maxWidth = (baseClipWidths.brand * currentZoom) + 'px');
+            document.querySelectorAll('.t-medical').forEach(c => c.style.maxWidth = (baseClipWidths.medical * currentZoom) + 'px');
 
             // Update ruler marks proportionally
             updateRulerMarks(currentZoom);
