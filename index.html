@@ -135,7 +135,10 @@
             #ecResizeHandle { display: none !important; }
 
             /* EC panel below monitor */
-            #ecPanel { width: 100% !important; min-height: 200px; max-height: 300px; }
+            #ecPanel { width: 100% !important; min-height: 140px; max-height: 220px; }
+            #ecPanel .ec-body { padding: 0; }
+            #ecPanel #ec-about { padding: 8px 12px; font-size: 9px; line-height: 1.5; }
+            #ecPanel #ec-about p { margin-bottom: 4px; }
 
             /* Timeline */
             #timelinePanel { height: auto !important; min-height: 150px; }
@@ -278,14 +281,14 @@
                     <span style="font-size: 8px;">Effect Controls</span>
                 </div>
                 <div class="ec-tabs">
-                    <div class="ec-tab active" onclick="switchEC('clip', this)"><i class="fas fa-film text-[7px] mr-1"></i>Klip</div>
-                    <div class="ec-tab" onclick="switchEC('about', this)"><i class="fas fa-user text-[7px] mr-1"></i>Hakkimda</div>
+                    <div class="ec-tab" onclick="switchEC('clip', this)"><i class="fas fa-film text-[7px] mr-1"></i>Klip</div>
+                    <div class="ec-tab active" onclick="switchEC('about', this)"><i class="fas fa-user text-[7px] mr-1"></i>Hakkimda</div>
                     <div class="ec-tab" onclick="switchEC('skills', this)"><i class="fas fa-tools text-[7px] mr-1"></i>Teknik</div>
                     <div class="ec-tab" onclick="switchEC('exp', this)"><i class="fas fa-briefcase text-[7px] mr-1"></i>Deneyim</div>
                 </div>
                 <div class="ec-body">
                     <!-- Clip Info -->
-                    <div id="ec-clip" class="p-3 text-[9px]">
+                    <div id="ec-clip" class="p-3 text-[9px]" style="display:none">
                         <div id="metaDetails">
                             <div class="text-gray-500 italic text-[10px] mb-3">Bir klip secin...</div>
                             <div class="meta-grid">
@@ -297,7 +300,7 @@
                         </div>
                     </div>
                     <!-- About -->
-                    <div id="ec-about" class="p-4 text-[10px] leading-[1.7] text-gray-300 fade-up" style="display:none">
+                    <div id="ec-about" class="p-4 text-[10px] leading-[1.7] text-gray-300 fade-up">
                         <p class="mb-2"><strong class="text-white text-[11px]">Selamlar,</strong></p>
                         <p class="mb-2">Lise yıllarımda hobi olarak başladığım meslek hayatıma 2016 yılında profesyonelliğe ilk adımlarımı attım. <span class="text-gray-100">Erciyes Üniversitesi İletişim Fakültesi</span> mezunuyum.</p>
                         <p class="mb-2">2016'da YouTube kanalı açtım, <span class="text-blue-400 font-semibold">2M+</span> görüntülenme aldım. Stajımı <span class="text-gray-100">BaBaLa TV</span>'de yaptım.</p>
