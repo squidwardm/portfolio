@@ -236,7 +236,7 @@
             <span class="hover:text-gray-200 cursor-pointer">Marker</span>
             <span class="hover:text-gray-200 cursor-pointer">Graphics</span>
             <span class="hover:text-gray-200 cursor-pointer">Window</span>
-            <span class="hover:text-gray-200 cursor-pointer">Help</span>
+            <span class="hover:text-gray-200 cursor-pointer" onclick="guideStep=0; showGuide(); guideNav(0);">Help</span>
         </div>
         <div class="ml-auto flex items-center gap-4 text-gray-600 text-[9px]">
             <a href="mailto:mustafaozmenn9@gmail.com" class="contact-link"><i class="fas fa-envelope mr-1"></i>mustafaozmenn9@gmail.com</a>
@@ -504,6 +504,61 @@
         <div class="rush-nav-item" onclick="mobileTab('exp')"><i class="fas fa-briefcase"></i><span>Deneyim</span></div>
     </div>
 
+    <!-- User Guide Overlay -->
+    <div id="guideOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:#232323; border:1px solid #333; border-radius:8px; max-width:420px; width:90%; padding:0; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+            <!-- Header -->
+            <div style="background:linear-gradient(135deg,#4f46e5,#4f7fff); padding:16px 20px; display:flex; align-items:center; gap:10px;">
+                <span style="background:#fff; color:#4f46e5; font-weight:800; font-size:11px; padding:3px 7px; border-radius:3px;">Pr</span>
+                <div>
+                    <div style="color:#fff; font-size:13px; font-weight:700;">Portfolyo Rehberi</div>
+                    <div style="color:rgba(255,255,255,0.7); font-size:9px;">Mustafa Ozmen | 2026</div>
+                </div>
+            </div>
+            <!-- Steps -->
+            <div id="guideSteps" style="padding:20px;">
+                <!-- Step indicators -->
+                <div id="guideIndicators" style="display:flex; gap:6px; margin-bottom:16px;">
+                    <div class="guide-dot active" style="width:8px; height:8px; border-radius:50%; background:#4f7fff; transition:all 0.3s;"></div>
+                    <div class="guide-dot" style="width:8px; height:8px; border-radius:50%; background:#444; transition:all 0.3s;"></div>
+                    <div class="guide-dot" style="width:8px; height:8px; border-radius:50%; background:#444; transition:all 0.3s;"></div>
+                    <div class="guide-dot" style="width:8px; height:8px; border-radius:50%; background:#444; transition:all 0.3s;"></div>
+                </div>
+                <!-- Step content -->
+                <div id="guideContent">
+                    <div class="guide-step" data-step="0">
+                        <div style="font-size:28px; margin-bottom:8px;"><i class="fas fa-film" style="color:#4f7fff;"></i></div>
+                        <div style="color:#fff; font-size:13px; font-weight:700; margin-bottom:6px;">Sekansı Keşfedin</div>
+                        <div style="color:#999; font-size:11px; line-height:1.6;">Alt taraftaki timeline'da 41 video klip bulunuyor. Her renk bir kategoriyi temsil eder: <span style="color:#4f7fff;">Marka</span>, <span style="color:#f59e0b;">Medikal</span>, <span style="color:#7dce3e;">YouTube</span>, <span style="color:#d392ff;">Influencer</span></div>
+                    </div>
+                    <div class="guide-step" data-step="1" style="display:none;">
+                        <div style="font-size:28px; margin-bottom:8px;"><i class="fas fa-play-circle" style="color:#7dce3e;"></i></div>
+                        <div style="color:#fff; font-size:13px; font-weight:700; margin-bottom:6px;">Klibe Tıklayın</div>
+                        <div style="color:#999; font-size:11px; line-height:1.6;">Herhangi bir klibe tıklayarak videoyu izleyebilirsiniz. Klip detayları ve metadata bilgileri sag panelde gorunur. <span style="color:#8ab4f8;">Klavye ok tuslariyla</span> klipler arasi gecis yapabilirsiniz.</div>
+                    </div>
+                    <div class="guide-step" data-step="2" style="display:none;">
+                        <div style="font-size:28px; margin-bottom:8px;"><i class="fas fa-search-plus" style="color:#f59e0b;"></i></div>
+                        <div style="color:#fff; font-size:13px; font-weight:700; margin-bottom:6px;">Yakınlaştırın</div>
+                        <div style="color:#999; font-size:11px; line-height:1.6;">Timeline'daki <span style="color:#8ab4f8;">+/- butonlarıyla</span> veya <span style="color:#8ab4f8;">Ctrl + fare tekerleğiyle</span> zoom yapabilirsiniz. Klip başlıklarını daha net görmek için yakınlaştırın.</div>
+                    </div>
+                    <div class="guide-step" data-step="3" style="display:none;">
+                        <div style="font-size:28px; margin-bottom:8px;"><i class="fas fa-user" style="color:#d392ff;"></i></div>
+                        <div style="color:#fff; font-size:13px; font-weight:700; margin-bottom:6px;">Beni Tanıyın</div>
+                        <div style="color:#999; font-size:11px; line-height:1.6;">Sag paneldeki sekmelerden <span style="color:#8ab4f8;">Hakkimda</span>, <span style="color:#8ab4f8;">Teknik</span> becerilerimi ve <span style="color:#8ab4f8;">Deneyim</span> bilgilerimi inceleyebilirsiniz. Iletisim icin ust bardaki mail ve Instagram linklerini kullanabilirsiniz.</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Buttons -->
+            <div style="padding:0 20px 16px; display:flex; justify-content:space-between; align-items:center;">
+                <button id="guideSkip" onclick="closeGuide()" style="background:none; border:none; color:#666; font-size:10px; cursor:pointer; padding:6px 0;">Atla</button>
+                <div style="display:flex; gap:8px;">
+                    <button id="guidePrev" onclick="guideNav(-1)" style="background:#2a2a2a; border:1px solid #444; color:#aaa; font-size:10px; padding:7px 14px; border-radius:4px; cursor:pointer; display:none;">Geri</button>
+                    <button id="guideNext" onclick="guideNav(1)" style="background:#4f7fff; border:none; color:#fff; font-size:10px; font-weight:600; padding:7px 18px; border-radius:4px; cursor:pointer;">Sonraki</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentClipIndex = -1;
         const allClips = [];
@@ -596,6 +651,36 @@
             }
         }
 
+        // User Guide
+        let guideStep = 0;
+        const totalSteps = 4;
+
+        function showGuide() {
+            document.getElementById('guideOverlay').style.display = 'flex';
+        }
+
+        function closeGuide() {
+            document.getElementById('guideOverlay').style.display = 'none';
+            try { localStorage.setItem('guide-seen', 'true'); } catch(e) {}
+        }
+
+        function guideNav(dir) {
+            guideStep += dir;
+            if (guideStep >= totalSteps) { closeGuide(); return; }
+            if (guideStep < 0) guideStep = 0;
+
+            document.querySelectorAll('.guide-step').forEach(s => s.style.display = 'none');
+            document.querySelector(`.guide-step[data-step="${guideStep}"]`).style.display = 'block';
+
+            document.querySelectorAll('.guide-dot').forEach((d, i) => {
+                d.style.background = i === guideStep ? '#4f7fff' : '#444';
+            });
+
+            document.getElementById('guidePrev').style.display = guideStep > 0 ? 'inline-block' : 'none';
+            document.getElementById('guideNext').textContent = guideStep === totalSteps - 1 ? 'Başla' : 'Sonraki';
+            document.getElementById('guideSkip').style.display = guideStep === totalSteps - 1 ? 'none' : 'block';
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.clip').forEach((el, i) => {
                 el.dataset.index = i;
@@ -629,6 +714,11 @@
             document.getElementById('zoomInBtn').addEventListener('click', zoomIn);
             document.getElementById('zoomOutBtn').addEventListener('click', zoomOut);
             document.getElementById('zoomResetBtn').addEventListener('click', resetZoom);
+
+            // Show guide on first visit
+            try {
+                if (!localStorage.getItem('guide-seen')) { showGuide(); }
+            } catch(e) { showGuide(); }
         });
 
         function play(id, title, details, clipEl) {
