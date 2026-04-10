@@ -25,7 +25,7 @@
         .clip {
             cursor: pointer; min-height: 38px; font-size: 10px; font-weight: 600;
             display: flex; align-items: center; padding: 0 8px;
-            border-radius: 3px; white-space: nowrap;
+            border-radius: 3px; white-space: nowrap; overflow: hidden;
             transition: all 0.15s ease; border-left: 2px solid rgba(0,0,0,0.25);
             position: relative; flex-shrink: 0; gap: 6px;
             color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4);
@@ -90,6 +90,7 @@
             height: 20px; background: #1a1a1a; border-bottom: 1px solid #2a2a2a;
             display: flex; align-items: flex-end; padding-left: 60px;
             font-size: 8px; color: #444; user-select: none; flex-shrink: 0;
+            overflow: hidden;
         }
         .ruler-mark { border-left: 1px solid #2a2a2a; padding: 0 6px 2px; min-width: 70px; }
 
