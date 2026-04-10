@@ -961,6 +961,12 @@
             const clamped = Math.min(500, Math.max(180, w));
             ecPanel.style.width = clamped + 'px';
         });
+        // Mouse wheel horizontal scroll on timeline
+        document.querySelector('.scroll-area').addEventListener('wheel', (e) => {
+            e.preventDefault();
+            e.currentTarget.scrollLeft += e.deltaY;
+        }, { passive: false });
+
         function sendTeklif(e) {
             e.preventDefault();
             const form = document.getElementById('teklifForm');
