@@ -911,39 +911,6 @@
             document.getElementById('ecPanel').scrollIntoView({ behavior: 'smooth' });
         }
 
-        document.addEventListener('keydown', (e) => {
-            const tag = e.target.tagName.toLowerCase();
-            if (tag === 'input' || tag === 'textarea') return;
-            if (e.key === 'ArrowRight' || e.key === 'l') nextClip();
-            if (e.key === 'ArrowLeft' || e.key === 'j') prevClip();
-
-            // Zoom keyboard shortcuts
-            if ((e.ctrlKey || e.metaKey) && e.key === '+') {
-                e.preventDefault();
-                zoomIn();
-            }
-            if ((e.ctrlKey || e.metaKey) && e.key === '-') {
-                e.preventDefault();
-                zoomOut();
-            }
-            if ((e.ctrlKey || e.metaKey) && e.key === '0') {
-                e.preventDefault();
-                resetZoom();
-            }
-            if (e.shiftKey && e.key === 'z') {
-                e.preventDefault();
-                resetZoom();
-            }
-        });
-
-        // Mouse wheel zoom
-        document.addEventListener('wheel', (e) => {
-            if ((e.ctrlKey || e.metaKey) && !e.altKey) {
-                e.preventDefault();
-                const delta = e.deltaY > 0 ? -0.1 : 0.1;
-                setZoom(currentZoom + delta);
-            }
-        }, { passive: false });
 
         // Timeline resize
         const handle = document.getElementById('resizeHandle');
