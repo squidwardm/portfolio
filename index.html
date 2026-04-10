@@ -23,7 +23,7 @@
         .panel-header .active-tab { color: #e0e0e0; border-bottom: 2px solid #4f7fff; padding-bottom: 2px; }
 
         .clip {
-            cursor: pointer; height: 38px; font-size: 10px; font-weight: 600;
+            cursor: pointer; min-height: 38px; font-size: 10px; font-weight: 600;
             display: flex; align-items: center; padding: 0 8px;
             border-radius: 3px; white-space: nowrap;
             transition: all 0.15s ease; border-left: 2px solid rgba(0,0,0,0.25);
@@ -34,6 +34,10 @@
             width: 48px; height: 30px; object-fit: cover; border-radius: 2px;
             flex-shrink: 0; opacity: 0.85;
         }
+        .seq-content { flex: 1; display: flex; flex-direction: column; }
+        .seq-content .timeline-content-wrapper { flex: 1; display: flex; }
+        .seq-content .timeline-content-wrapper > div { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .seq-content .timeline-content-wrapper > div > .flex { flex: 1; }
         .clip:hover { filter: brightness(1.15); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.4); z-index: 5; }
         .clip:hover img.clip-thumb { opacity: 1; }
         .clip-active { outline: 2px solid #fff; z-index: 10; border-left-color: #fff; box-shadow: 0 0 12px rgba(255,255,255,0.3); }
@@ -489,7 +493,7 @@
             </div>
 
             <!-- Marka Sequence -->
-            <div class="seq-content scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" id="seq-marka" style="background: #181818;">
+            <div class="seq-content scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" id="seq-marka" style="background: #181818; display:flex;">
                 <div class="playhead"></div>
                 <div class="timeline-content-wrapper">
                     <div class="space-y-[5px]" style="min-width: 2400px; margin-left: 60px;">
@@ -1031,7 +1035,7 @@
             document.querySelectorAll('.seq-tab').forEach(t => t.classList.remove('active'));
             tabEl.classList.add('active');
             document.querySelectorAll('.seq-content').forEach(s => s.style.display = 'none');
-            document.getElementById('seq-' + name).style.display = 'block';
+            document.getElementById('seq-' + name).style.display = 'flex';
             document.getElementById('seqTitle').textContent = seqNames[name];
             document.getElementById('seqClipCount').textContent = seqCounts[name];
 
