@@ -634,12 +634,6 @@
                 activeClip.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
             }
 
-            // Save to localStorage
-            try {
-                localStorage.setItem('timeline-zoom-level', currentZoom);
-            } catch (e) {
-                // Silently fail if localStorage unavailable
-            }
 
             // Update button states and display
             updateZoomButtonStates();
@@ -821,17 +815,9 @@
                 }
             });
 
-            // Initialize zoom from localStorage
-            try {
-                const savedZoom = localStorage.getItem('timeline-zoom-level');
-                if (savedZoom) {
-                    setZoom(parseFloat(savedZoom));
-                } else {
-                    setZoom(1.0);
-                }
-            } catch (e) {
-                setZoom(1.0);
-            }
+            // Always start at default zoom
+            try { localStorage.removeItem('timeline-zoom-level'); } catch(e) {}
+            setZoom(1.0);
 
             // Attach button event listeners
             document.getElementById('zoomInBtn').addEventListener('click', zoomIn);
