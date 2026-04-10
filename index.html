@@ -106,9 +106,10 @@
 
         .ec-tabs { display: flex; flex-shrink: 0; border-bottom: 1px solid #0d0d0d; }
         .ec-tab {
-            flex: 1; text-align: center; padding: 6px 2px; font-size: 8px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.5px; color: #bbb;
+            flex: 1; text-align: center; padding: 5px 1px; font-size: 7px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.3px; color: #bbb;
             cursor: pointer; transition: all 0.15s; position: relative; background: #272727;
+            white-space: nowrap; overflow: hidden; min-width: 0;
         }
         .ec-tab:hover { color: #e0e0e0; background: #2a2a2a; }
         .ec-tab.active { color: #fff; background: #232323; }
@@ -172,6 +173,28 @@
         /* Meta lines in clip tab */
         .meta-line { color: #999; font-size: 9px; padding: 1px 0; }
         .meta-highlight { color: #f59e0b; font-size: 9px; font-weight: 600; padding: 2px 0; margin-top: 4px; }
+
+        /* Teklif Form Styles */
+        .teklif-form input, .teklif-form textarea {
+            width: 100%; background: #1a1a1a; border: 1px solid #333; border-radius: 4px;
+            color: #e0e0e0; padding: 8px 10px; font-size: 10px; font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s; outline: none; resize: vertical;
+        }
+        .teklif-form input:focus, .teklif-form textarea:focus {
+            border-color: #4f7fff; box-shadow: 0 0 0 2px rgba(79,127,255,0.15);
+        }
+        .teklif-form input::placeholder, .teklif-form textarea::placeholder { color: #555; }
+        .teklif-form label { display: block; color: #888; font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .teklif-submit {
+            background: linear-gradient(135deg, #4f7fff 0%, #3a5fd0 100%); color: #fff;
+            border: none; border-radius: 4px; padding: 9px 20px; font-size: 10px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; width: 100%; letter-spacing: 0.5px;
+        }
+        .teklif-submit:hover { filter: brightness(1.15); transform: translateY(-1px); box-shadow: 0 2px 10px rgba(79,127,255,0.3); }
+        .teklif-submit:active { transform: translateY(0); }
+        .teklif-success { display: none; text-align: center; padding: 20px; }
+        .teklif-success.show { display: block; }
+        .teklif-success i { font-size: 28px; color: #22c55e; margin-bottom: 8px; }
 
         /* Timeline Zoom Functionality */
         .timeline-content-wrapper {
@@ -285,6 +308,7 @@
                     <div class="ec-tab active" onclick="switchEC('about', this)"><i class="fas fa-user text-[7px] mr-1"></i>Hakkimda</div>
                     <div class="ec-tab" onclick="switchEC('skills', this)"><i class="fas fa-tools text-[7px] mr-1"></i>Teknik</div>
                     <div class="ec-tab" onclick="switchEC('exp', this)"><i class="fas fa-briefcase text-[7px] mr-1"></i>Deneyim</div>
+                    <div class="ec-tab" onclick="switchEC('teklif', this)"><i class="fas fa-paper-plane text-[7px] mr-1"></i>Teklif</div>
                 </div>
                 <div class="ec-body">
                     <!-- Clip Info -->
@@ -362,6 +386,45 @@
                                 <div class="text-gray-400 text-[11px]">2018</div>
                             </div>
                         </div>
+                    <!-- Teklif Al -->
+                    <div id="ec-teklif" class="p-4 text-[10px] fade-up" style="display:none">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-envelope-open-text text-blue-400 text-[18px] mb-2" style="display:block"></i>
+                            <div class="text-white font-semibold text-[13px]">Teklif Alın</div>
+                            <div class="text-gray-500 text-[9px] mt-1">Projenizi anlatın, size en kısa sürede dönüş yapayım.</div>
+                        </div>
+
+                        <form class="teklif-form space-y-3" action="https://formsubmit.co/mustafaozmenn9@gmail.com" method="POST" id="teklifForm">
+                            <!-- FormSubmit config -->
+                            <input type="hidden" name="_subject" value="Yeni Teklif Talebi - Portfolio">
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_template" value="table">
+                            <input type="hidden" name="_next" value="https://squidwardm.github.io">
+                            <input type="text" name="_honey" style="display:none">
+
+                            <div>
+                                <label for="teklifEmail">E-posta Adresiniz</label>
+                                <input type="email" id="teklifEmail" name="email" placeholder="ornek@mail.com" required>
+                            </div>
+                            <div>
+                                <label for="teklifName">İsim (Opsiyonel)</label>
+                                <input type="text" id="teklifName" name="isim" placeholder="Adınız Soyadınız">
+                            </div>
+                            <div>
+                                <label for="teklifMsg">Mesajınız</label>
+                                <textarea id="teklifMsg" name="mesaj" rows="5" placeholder="Projenizi kısaca anlatın... (Konu, süre, bütçe vs.)" required></textarea>
+                            </div>
+                            <button type="submit" class="teklif-submit">
+                                <i class="fas fa-paper-plane mr-1 text-[8px]"></i> Gönder
+                            </button>
+                        </form>
+
+                        <div id="teklifSuccess" class="teklif-success">
+                            <i class="fas fa-check-circle"></i>
+                            <div class="text-white font-semibold text-[12px]">Mesajınız Gönderildi!</div>
+                            <div class="text-gray-400 text-[9px] mt-1">En kısa sürede dönüş yapacağım.</div>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -502,6 +565,7 @@
         <div class="rush-nav-item" onclick="mobileTab('about')"><i class="fas fa-user"></i><span>Hakkımda</span></div>
         <div class="rush-nav-item" onclick="mobileTab('skills')"><i class="fas fa-tools"></i><span>Teknik</span></div>
         <div class="rush-nav-item" onclick="mobileTab('exp')"><i class="fas fa-briefcase"></i><span>Deneyim</span></div>
+        <div class="rush-nav-item" onclick="mobileTab('teklif')"><i class="fas fa-paper-plane"></i><span>Teklif</span></div>
     </div>
 
     <!-- Guided Tour -->
@@ -830,7 +894,7 @@
         }
 
         function switchEC(name, el) {
-            ['clip', 'about', 'skills', 'exp'].forEach(t => {
+            ['clip', 'about', 'skills', 'exp', 'teklif'].forEach(t => {
                 document.getElementById('ec-' + t).style.display = t === name ? 'block' : 'none';
             });
             document.querySelectorAll('.ec-tab').forEach(t => t.classList.remove('active'));
@@ -841,7 +905,7 @@
             document.querySelectorAll('.rush-nav-item').forEach(i => i.classList.remove('active'));
             event.currentTarget.classList.add('active');
             if (name === 'timeline') return;
-            const tabMap = { clip: 0, about: 1, skills: 2, exp: 3 };
+            const tabMap = { clip: 0, about: 1, skills: 2, exp: 3, teklif: 4 };
             document.querySelectorAll('.ec-tab')[tabMap[name]].click();
             document.getElementById('ecPanel').scrollIntoView({ behavior: 'smooth' });
         }
