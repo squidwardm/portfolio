@@ -846,7 +846,7 @@
 
         function play(id, title, details, clipEl) {
             const player = document.getElementById('videoDisplay');
-            player.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+            player.src = `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
 
             // Parse metadata from data-meta attribute
             const meta = clipEl ? clipEl.dataset.meta : '';
