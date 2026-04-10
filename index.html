@@ -281,7 +281,7 @@
             <span class="hover:text-gray-200 cursor-pointer">Marker</span>
             <span class="hover:text-gray-200 cursor-pointer">Graphics</span>
             <span class="hover:text-gray-200 cursor-pointer">Window</span>
-            <span class="hover:text-gray-200 cursor-pointer" onclick="guideStep=0; showGuide(); guideNav(0);">Help</span>
+            <span class="cursor-pointer" style="color:#4f7fff;" onmouseover="this.style.color='#7ba3ff'" onmouseout="this.style.color='#4f7fff'" onclick="guideStep=0; showGuide(); guideNav(0);">Help</span>
         </div>
         <div class="ml-auto flex items-center gap-4 text-gray-600 text-[9px]">
             <a href="mailto:mustafaozmenn9@gmail.com" class="contact-link"><i class="fas fa-envelope mr-1"></i>mustafaozmenn9@gmail.com</a>
@@ -331,6 +331,7 @@
                     <div class="ec-tab" onclick="switchEC('skills', this)"><i class="fas fa-tools text-[7px] mr-1"></i>Teknik</div>
                     <div class="ec-tab" onclick="switchEC('exp', this)"><i class="fas fa-briefcase text-[7px] mr-1"></i>Deneyim</div>
                     <div class="ec-tab" onclick="switchEC('teklif', this)"><i class="fas fa-paper-plane text-[7px] mr-1"></i>Teklif</div>
+                    <div class="ec-tab" onclick="switchEC('feedback', this)"><i class="fas fa-comment-dots text-[7px] mr-1"></i>Geri Bildirim</div>
                 </div>
                 <div class="ec-body">
                     <!-- Clip Info -->
@@ -441,6 +442,49 @@
                             <div class="text-white font-semibold text-[12px]">Mesajınız Gönderildi!</div>
                             <div class="text-gray-400 text-[9px] mt-1">En kısa sürede dönüş yapacağım.</div>
                         </div>
+                    <!-- Geri Bildirim -->
+                    <div id="ec-feedback" class="p-4 text-[10px] fade-up" style="display:none">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-comment-dots text-purple-400 text-[18px] mb-2" style="display:block"></i>
+                            <div class="text-white font-semibold text-[13px]">Geri Bildirim</div>
+                            <div class="text-gray-500 text-[9px] mt-1">Siteyi puanlayın ve geri bildirimde bulunun.</div>
+                        </div>
+
+                        <form class="teklif-form space-y-3" id="feedbackForm" onsubmit="return sendFeedback(event)">
+                            <input type="text" name="_honey" style="display:none">
+                            <div>
+                                <label>Site Puanı</label>
+                                <div class="flex gap-1 mb-1" id="starRating">
+                                    <span class="star" data-val="1" onclick="setRating(1)" style="cursor:pointer;font-size:18px;color:#444;">&#9733;</span>
+                                    <span class="star" data-val="2" onclick="setRating(2)" style="cursor:pointer;font-size:18px;color:#444;">&#9733;</span>
+                                    <span class="star" data-val="3" onclick="setRating(3)" style="cursor:pointer;font-size:18px;color:#444;">&#9733;</span>
+                                    <span class="star" data-val="4" onclick="setRating(4)" style="cursor:pointer;font-size:18px;color:#444;">&#9733;</span>
+                                    <span class="star" data-val="5" onclick="setRating(5)" style="cursor:pointer;font-size:18px;color:#444;">&#9733;</span>
+                                </div>
+                                <input type="hidden" name="puan" id="feedbackRating" value="">
+                            </div>
+                            <div>
+                                <label for="feedbackMsg">Mesajınız / Bug Bildirimi</label>
+                                <textarea id="feedbackMsg" name="mesaj" rows="4" placeholder="Bir sorun mu buldunuz? Ya da genel bir geri bildiriminiz mi var?" required></textarea>
+                            </div>
+                            <div>
+                                <label for="feedbackFile">Ekran Görüntüsü (Opsiyonel)</label>
+                                <input type="file" id="feedbackFile" accept="image/*" style="width:100%; background:#1a1a1a; border:1px solid #333; border-radius:4px; color:#e0e0e0; padding:6px 8px; font-size:9px;">
+                            </div>
+                            <div>
+                                <label for="feedbackEmail">E-posta (Opsiyonel)</label>
+                                <input type="email" id="feedbackEmail" name="email" placeholder="ornek@mail.com">
+                            </div>
+                            <button type="submit" class="teklif-submit" id="feedbackBtn" style="background:linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);">
+                                <i class="fas fa-paper-plane mr-1 text-[8px]"></i> Gönder
+                            </button>
+                        </form>
+
+                        <div id="feedbackSuccess" class="teklif-success">
+                            <i class="fas fa-check-circle"></i>
+                            <div class="text-white font-semibold text-[12px]">Geri Bildiriminiz Alındı!</div>
+                            <div class="text-gray-400 text-[9px] mt-1">Teşekkür ederim.</div>
+                        </div>
                     </div>
                     </div>
                 </div>
@@ -506,7 +550,6 @@
                         <div class="clip t-brand" data-tooltip="Tourism / Commercial" data-meta="Marka Reklam Çekimi|Işık|Kamera" onclick="play('jFYEJ0TztQE','Corendon Hotels Kemer 3','Freelance / Tourism / Commercial',this)">Corendon Hotels 3</div>
                         <div class="clip t-brand" data-tooltip="Tourism / Commercial" data-meta="Marka Reklam Çekimi|Işık|Kamera" onclick="play('AqOIdGSByDU','Corendon Hotels Kemer 4','Freelance / Tourism / Commercial',this)">Corendon Hotels 4</div>
                         <div class="clip t-brand" data-tooltip="Kurgu / Mood Film" data-meta="Sosyal Medya Trend İçerik|Çekim|Kurgu|Ses" onclick="play('VW8gbc3aZXY','Reborn Cocktail','Freelance / Kurgu / Mood Film',this)">Reborn Cocktail</div>
-                        <div class="clip t-brand" data-tooltip="İnşaat / Tanıtım" data-meta="Youtube İçerik|Kurgu" onclick="play('XT3XNbSTWAc','Akademik Link İnşaat Gezmesi','Freelance / İnşaat / Tanıtım',this)">Akademik Link İnşaat</div>
                         <div class="clip t-brand" data-tooltip="Düğün Hikayesi / Kısa Film" data-meta="Kurgu" onclick="play('Fv7ENVYXYEY','Düğün Hikayesi - Kısa','Freelance / Düğün Filmi',this)">Düğün Hikayesi</div>
                     </div>
                     <div class="flex items-center gap-[3px]">
@@ -566,6 +609,7 @@
                     </div>
                     <div class="flex items-center gap-[3px]">
                         <div class="track-label"><span class="tl-name">V1</span><span class="tl-sub">Diğer</span></div>
+                        <div class="clip t-youtube" data-tooltip="İnşaat / Tanıtım" data-meta="Youtube İçerik|Kurgu" onclick="play('XT3XNbSTWAc','Akademik Link İnşaat Gezmesi','Freelance / İnşaat / Tanıtım',this)">Akademik Link İnşaat</div>
                         <div class="clip t-youtube" data-tooltip="Literat TV / Kurgu" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('5bAgW5dI6xc','SPORCULAR, DİZİLERDEKİ SPOR SAHNELERİNİ İZLİYOR!','Literat TV / Kurgu',this)">SPORCULAR SPOR SAHNELERİNİ İZLİYOR!</div>
                         <div class="clip t-youtube" data-tooltip="Literat / Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('lXLCfBTsELs','ÇOCUKLAR SAĞIRA SORUYOR! w/ Melek Morgil','Literat / Prodüksiyon + Kurgu',this)">ÇOCUKLAR SAĞIRA SORUYOR!</div>
                         <div class="clip t-youtube" data-tooltip="Orkun Işıtmak / Post-Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('HQceVi0uUgo','150 KİLO KARPUZ YEDİK! @orkunisitmak','Orkun Işıtmak / Post-Prodüksiyon',this)">150 KİLO KARPUZ YEDİK!</div>
@@ -628,6 +672,7 @@
         <div class="rush-nav-item" onclick="mobileTab('skills')"><i class="fas fa-tools"></i><span>Teknik</span></div>
         <div class="rush-nav-item" onclick="mobileTab('exp')"><i class="fas fa-briefcase"></i><span>Deneyim</span></div>
         <div class="rush-nav-item" onclick="mobileTab('teklif')"><i class="fas fa-paper-plane"></i><span>Teklif</span></div>
+        <div class="rush-nav-item" onclick="mobileTab('feedback')"><i class="fas fa-comment-dots"></i><span>Geri Bildirim</span></div>
     </div>
 
     <!-- Guided Tour -->
@@ -950,7 +995,7 @@
         }
 
         function switchEC(name, el) {
-            ['clip', 'about', 'skills', 'exp', 'teklif'].forEach(t => {
+            ['clip', 'about', 'skills', 'exp', 'teklif', 'feedback'].forEach(t => {
                 document.getElementById('ec-' + t).style.display = t === name ? 'block' : 'none';
             });
             document.querySelectorAll('.ec-tab').forEach(t => t.classList.remove('active'));
@@ -961,7 +1006,7 @@
             document.querySelectorAll('.rush-nav-item').forEach(i => i.classList.remove('active'));
             event.currentTarget.classList.add('active');
             if (name === 'timeline') return;
-            const tabMap = { clip: 0, about: 1, skills: 2, exp: 3, teklif: 4 };
+            const tabMap = { clip: 0, about: 1, skills: 2, exp: 3, teklif: 4, feedback: 5 };
             document.querySelectorAll('.ec-tab')[tabMap[name]].click();
             document.getElementById('ecPanel').scrollIntoView({ behavior: 'smooth' });
         }
@@ -1036,7 +1081,7 @@
         });
 
         const seqNames = { marka: 'Marka_Sequence', medikal: 'Medikal_Sequence', youtube: 'YouTube_Sequence', influencer: 'Influencer_ve_Marka_İşb_Sequence' };
-        const seqCounts = { marka: '11 clips', medikal: '5 clips', youtube: '16 clips', influencer: '11 clips' };
+        const seqCounts = { marka: '10 clips', medikal: '5 clips', youtube: '17 clips', influencer: '11 clips' };
 
         function switchSeq(name, tabEl) {
             document.querySelectorAll('.seq-tab').forEach(t => t.classList.remove('active'));
@@ -1079,6 +1124,58 @@
                 btn.innerHTML = '<i class="fas fa-paper-plane mr-1 text-[8px]"></i> Gönder';
                 alert('Gönderilemedi. Lütfen tekrar deneyin.');
             });
+            return false;
+        }
+
+        let currentRating = 0;
+        function setRating(val) {
+            currentRating = val;
+            document.getElementById('feedbackRating').value = val;
+            document.querySelectorAll('#starRating .star').forEach((s, i) => {
+                s.style.color = i < val ? '#f59e0b' : '#444';
+            });
+        }
+
+        function sendFeedback(e) {
+            e.preventDefault();
+            const form = document.getElementById('feedbackForm');
+            const btn = document.getElementById('feedbackBtn');
+            const data = new FormData(form);
+            data.append('_subject', 'Yeni Geri Bildirim - Portfolio');
+            data.append('_captcha', 'false');
+            data.append('_template', 'table');
+
+            // Handle file upload as base64
+            const fileInput = document.getElementById('feedbackFile');
+            const processAndSend = () => {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1 text-[8px]"></i> Gönderiliyor...';
+
+                fetch('https://formsubmit.co/ajax/mustafaozmenn9@gmail.com', {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
+                    body: data
+                }).then(r => r.json()).then(() => {
+                    form.style.display = 'none';
+                    document.getElementById('feedbackSuccess').classList.add('show');
+                }).catch(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane mr-1 text-[8px]"></i> Gönder';
+                    alert('Gönderilemedi. Lütfen tekrar deneyin.');
+                });
+            };
+
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    data.append('ekran_goruntusu', reader.result.substring(0, 500) + '... [Dosya ektedir]');
+                    data.append('dosya_adi', fileInput.files[0].name);
+                    processAndSend();
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                processAndSend();
+            }
             return false;
         }
     </script>
