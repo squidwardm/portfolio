@@ -912,6 +912,8 @@
         }
 
         document.addEventListener('keydown', (e) => {
+            const tag = e.target.tagName.toLowerCase();
+            if (tag === 'input' || tag === 'textarea') return;
             if (e.key === 'ArrowRight' || e.key === 'l') nextClip();
             if (e.key === 'ArrowLeft' || e.key === 'j') prevClip();
 
