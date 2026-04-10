@@ -961,10 +961,15 @@
             const clamped = Math.min(500, Math.max(180, w));
             ecPanel.style.width = clamped + 'px';
         });
-        // Mouse wheel horizontal scroll on timeline
+        // Mouse wheel on timeline: pinch/ctrl+wheel = zoom, normal wheel = horizontal scroll
         document.querySelector('.scroll-area').addEventListener('wheel', (e) => {
             e.preventDefault();
-            e.currentTarget.scrollLeft += e.deltaY;
+            if (e.ctrlKey || e.metaKey) {
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                setZoom(currentZoom + delta);
+            } else {
+                e.currentTarget.scrollLeft += e.deltaY;
+            }
         }, { passive: false });
 
         function sendTeklif(e) {
