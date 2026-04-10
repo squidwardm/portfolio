@@ -1025,7 +1025,7 @@
                     const delta = e.deltaY > 0 ? -0.1 : 0.1;
                     setZoom(currentZoom + delta);
                 } else {
-                    e.currentTarget.scrollLeft += e.deltaY;
+                    e.currentTarget.scrollLeft += e.deltaY + e.deltaX;
                 }
             }, { passive: false });
         });
