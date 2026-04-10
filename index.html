@@ -170,6 +170,23 @@
         .rush-nav-item:hover, .rush-nav-item.active { color: #4f7fff; }
         .rush-nav-item i { font-size: 16px; }
 
+        /* Sequence Tabs */
+        .seq-tab {
+            padding: 5px 12px; font-size: 8px; font-weight: 600; color: #666;
+            cursor: pointer; transition: all 0.15s; position: relative;
+            display: flex; align-items: center; gap: 4px; border-right: 1px solid #0d0d0d;
+        }
+        .seq-tab:hover { color: #bbb; background: #252525; }
+        .seq-tab.active { color: #e0e0e0; background: #181818; }
+        .seq-tab.active::after {
+            content: ''; position: absolute; bottom: 0; left: 10%; right: 10%;
+            height: 2px; border-radius: 1px;
+        }
+        .seq-tab[data-seq="marka"].active::after { background: #4f7fff; }
+        .seq-tab[data-seq="medikal"].active::after { background: #f59e0b; }
+        .seq-tab[data-seq="youtube"].active::after { background: #6dbe30; }
+        .seq-tab[data-seq="influencer"].active::after { background: #c47aee; }
+
         /* Meta lines in clip tab */
         .meta-line { color: #999; font-size: 9px; padding: 1px 0; }
         .meta-highlight { color: #f59e0b; font-size: 9px; font-weight: 600; padding: 2px 0; margin-top: 4px; }
@@ -432,20 +449,36 @@
 
         <!-- Timeline -->
         <div id="timelinePanel" class="panel" style="flex-shrink: 0;">
-            <div class="panel-header">
+            <div class="panel-header" style="padding-bottom:0;">
                 <div class="flex items-center gap-3">
                     <i class="fas fa-film text-[8px] text-blue-400"></i>
-                    <span>Portfolyo_Sequence</span>
+                    <span id="seqTitle">Marka_Sequence</span>
                 </div>
                 <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-3 text-[7.5px] text-gray-500 font-normal normal-case tracking-normal">
-                        <span class="flex items-center gap-1"><span class="legend-dot" style="background:#f59e0b"></span>Medikal</span>
-                        <span class="flex items-center gap-1"><span class="legend-dot" style="background:#4f7fff"></span>Marka</span>
-                        <span class="flex items-center gap-1"><span class="legend-dot" style="background:#6dbe30"></span>YouTube</span>
-                        <span class="flex items-center gap-1"><span class="legend-dot" style="background:#c47aee"></span>Influencer</span>
-                    </div>
-                    <span class="text-[8px] text-gray-600">41 clips</span>
+                    <span id="seqClipCount" class="text-[8px] text-gray-600">11 clips</span>
                     <i class="fas fa-magnet text-[8px] text-blue-400 opacity-50" title="Snap"></i>
+                    <div id="zoomControls">
+                        <button id="zoomOutBtn" title="Zoom Out"><i class="fas fa-minus"></i></button>
+                        <span id="zoomLevel">100%</span>
+                        <button id="zoomInBtn" title="Zoom In"><i class="fas fa-plus"></i></button>
+                        <button id="zoomResetBtn" title="Reset"><i class="fas fa-redo-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sequence Tabs -->
+            <div class="flex border-b border-[#0d0d0d]" style="background:#1e1e1e;">
+                <div class="seq-tab active" data-seq="marka" onclick="switchSeq('marka',this)">
+                    <span class="legend-dot" style="background:#4f7fff"></span> Marka
+                </div>
+                <div class="seq-tab" data-seq="medikal" onclick="switchSeq('medikal',this)">
+                    <span class="legend-dot" style="background:#f59e0b"></span> Medikal
+                </div>
+                <div class="seq-tab" data-seq="youtube" onclick="switchSeq('youtube',this)">
+                    <span class="legend-dot" style="background:#6dbe30"></span> YouTube
+                </div>
+                <div class="seq-tab" data-seq="influencer" onclick="switchSeq('influencer',this)">
+                    <span class="legend-dot" style="background:#c47aee"></span> Influencer
                 </div>
             </div>
 
@@ -453,25 +486,15 @@
                 <div class="ruler-mark">00:00</div><div class="ruler-mark">01:00</div><div class="ruler-mark">02:00</div>
                 <div class="ruler-mark">03:00</div><div class="ruler-mark">04:00</div><div class="ruler-mark">05:00</div>
                 <div class="ruler-mark">06:00</div><div class="ruler-mark">07:00</div><div class="ruler-mark">08:00</div>
-                <div class="ruler-mark">09:00</div><div class="ruler-mark">10:00</div><div class="ruler-mark">11:00</div>
-                <div class="ruler-mark">12:00</div><div class="ruler-mark">13:00</div><div class="ruler-mark">14:00</div>
-                <div id="zoomControls">
-                    <button id="zoomOutBtn" title="Zoom Out (Ctrl+-)"><i class="fas fa-minus"></i></button>
-                    <span id="zoomLevel">100%</span>
-                    <button id="zoomInBtn" title="Zoom In (Ctrl++)"><i class="fas fa-plus"></i></button>
-                    <button id="zoomResetBtn" title="Reset (Ctrl+0)"><i class="fas fa-redo-alt"></i></button>
-                </div>
             </div>
 
-            <div class="scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" style="background: #181818;">
+            <!-- Marka Sequence -->
+            <div class="seq-content scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" id="seq-marka" style="background: #181818;">
                 <div class="playhead"></div>
-
                 <div class="timeline-content-wrapper">
-                    <div class="space-y-[5px]" style="min-width: 3600px; margin-left: 60px;">
-
-                    <!-- V3: Marka + Medikal -->
+                    <div class="space-y-[5px]" style="min-width: 2400px; margin-left: 60px;">
                     <div class="flex items-center gap-[3px]">
-                        <div class="track-label"><span class="tl-name">V3</span><span class="tl-sub">Marka</span></div>
+                        <div class="track-label"><span class="tl-name">V2</span><span class="tl-sub">Freelance</span></div>
                         <div class="clip t-brand" data-tooltip="Marka Prodüksiyonu" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('ROMj6kPXPWE','Vokal Akademi Tanıtım','Freelance / Marka Prodüksiyonu',this)">Vokal Akademi</div>
                         <div class="clip t-brand" data-tooltip="Tourism / Commercial" data-meta="Marka Reklam Çekimi|Işık|Kamera" onclick="play('jONsvqDPdQU','Corendon Hotels Kemer 1','Freelance / Tourism / Commercial',this)">Corendon Hotels 1</div>
                         <div class="clip t-brand" data-tooltip="Tourism / Commercial" data-meta="Marka Reklam Çekimi|Işık|Kamera" onclick="play('900MV2jZ7Iw','Corendon Hotels Kemer 2','Freelance / Tourism / Commercial',this)">Corendon Hotels 2</div>
@@ -480,19 +503,51 @@
                         <div class="clip t-brand" data-tooltip="Kurgu / Mood Film" data-meta="Sosyal Medya Trend İçerik|Çekim|Kurgu|Ses" onclick="play('VW8gbc3aZXY','Reborn Cocktail','Freelance / Kurgu / Mood Film',this)">Reborn Cocktail</div>
                         <div class="clip t-brand" data-tooltip="İnşaat / Tanıtım" data-meta="Youtube İçerik|Kurgu" onclick="play('XT3XNbSTWAc','Akademik Link İnşaat Gezmesi','Freelance / İnşaat / Tanıtım',this)">Akademik Link İnşaat</div>
                         <div class="clip t-brand" data-tooltip="Düğün Hikayesi / Kısa Film" data-meta="Kurgu" onclick="play('Fv7ENVYXYEY','Düğün Hikayesi - Kısa','Freelance / Düğün Filmi',this)">Düğün Hikayesi</div>
+                    </div>
+                    <div class="flex items-center gap-[3px]">
+                        <div class="track-label"><span class="tl-name">V1</span><span class="tl-sub">United W.</span></div>
+                        <div class="clip t-brand" data-tooltip="United World / Gayrimenkul" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('au-8FLeyo8s','United World | Deniz Manzaralı Daireler','United World / Real Estate / Alanya',this)">United World - Sea View</div>
+                        <div class="clip t-brand" data-tooltip="United World / Gayrimenkul" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('PcpV__ZjXaw','United World | Luxury Villa Döşemealtı','United World / Real Estate / Antalya',this)">United World - Villa Döşemealtı</div>
+                        <div class="clip t-brand" data-tooltip="United World / Gayrimenkul" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('APEhFR-iCa8','United World | Villa Antalya Döşemealtı','United World / Real Estate / Antalya',this)">United World - Villa Antalya</div>
+                    </div>
+                    <div class="flex items-center gap-[3px] pt-1">
+                        <div class="track-label" style="opacity:0.3"><span class="tl-name">A1</span></div>
+                        <div class="h-[5px] rounded-sm flex-1 max-w-[3000px]" style="background: repeating-linear-gradient(90deg, rgba(34,197,94,0.12) 0px, rgba(34,197,94,0.22) 2px, rgba(34,197,94,0.06) 4px);"></div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medikal Sequence -->
+            <div class="seq-content scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" id="seq-medikal" style="background: #181818; display:none;">
+                <div class="playhead"></div>
+                <div class="timeline-content-wrapper">
+                    <div class="space-y-[5px]" style="min-width: 2000px; margin-left: 60px;">
+                    <div class="flex items-center gap-[3px]">
+                        <div class="track-label"><span class="tl-name">V1</span><span class="tl-sub">Medikal</span></div>
                         <div class="clip t-medical" data-tooltip="Medical / Prodüksiyon" data-meta="Sosyal Medya İçerik|Kamera|Işık|Ses|Renk|Kurgu" onclick="play('JKEOJaOgxno','Dr. Kaan Kalem | Annelik Estetiği','Medical / Prodüksiyon + Post-Prodüksiyon',this)">Dr. Kaan Kalem - Annelik Estetiği</div>
                         <div class="clip t-medical" data-tooltip="Medical / Prodüksiyon" data-meta="Sosyal Medya İçerik|Kamera|Işık|Ses|Renk|Kurgu" onclick="play('IbjzFYBAcM4','Dr. Kaan Kalem | Jinekomasti','Medical / Prodüksiyon + Post-Prodüksiyon',this)">Dr. Kaan Kalem - Jinekomasti</div>
                         <div class="clip t-medical" data-tooltip="Diş Kliniği / Hasta Hikayesi" data-meta="Sosyal Medya İçerik|Kamera|Işık|Ses|Renk|Kurgu" onclick="play('cc6-5xeHsts','Ballıpınar Diş Kliniği - Hasta Hikayesi','Medical / Prodüksiyon + Kurgu',this)">Ballıpınar Diş Kliniği</div>
                         <div class="clip t-medical" data-tooltip="Medical / Technical Edit" data-meta="Sosyal Medya İçerik|Kamera|Işık|Ses|Renk|Kurgu" onclick="play('orSxQXxAjjU','Ümit Hardal Ameliyat','Medical / Technical Edit',this)">Ümit Hardal Ameliyat</div>
                         <div class="clip t-medical" data-tooltip="Medical / Konu Anlatımı" data-meta="Sosyal Medya İçerik|Kamera|Işık|Ses|Renk|Kurgu" onclick="play('MMS97vDNBNs','Ümit Hardal Konu Anlatımı','Medical / Eğitim İçeriği',this)">Ümit Hardal Konu Anlatımı</div>
                     </div>
+                    <div class="flex items-center gap-[3px] pt-1">
+                        <div class="track-label" style="opacity:0.3"><span class="tl-name">A1</span></div>
+                        <div class="h-[5px] rounded-sm flex-1 max-w-[3000px]" style="background: repeating-linear-gradient(90deg, rgba(34,197,94,0.12) 0px, rgba(34,197,94,0.22) 2px, rgba(34,197,94,0.06) 4px);"></div>
+                    </div>
+                    </div>
+                </div>
+            </div>
 
-                    <!-- V2: YouTube -->
+            <!-- YouTube Sequence -->
+            <div class="seq-content scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" id="seq-youtube" style="background: #181818; display:none;">
+                <div class="playhead"></div>
+                <div class="timeline-content-wrapper">
+                    <div class="space-y-[5px]" style="min-width: 3200px; margin-left: 60px;">
                     <div class="flex items-center gap-[3px]">
-                        <div class="track-label"><span class="tl-name">V2</span><span class="tl-sub">YouTube</span></div>
+                        <div class="track-label"><span class="tl-name">V2</span><span class="tl-sub">Tepkikolik</span></div>
                         <div class="clip t-youtube" data-tooltip="Tepkikolik / Prodüksiyon" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('_l-ESNTuR9Y','CİNAYET POLİSİ, CİNAYET DAVASI ÇÖZÜYOR','Tepkikolik / Prodüksiyon + Post-Prodüksiyon',this)">CİNAYET POLİSİ CİNAYET DAVASI ÇÖZÜYOR</div>
                         <div class="clip t-youtube" data-tooltip="Tepkikolik / Post-Prodüksiyon" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('MmHxiVeNi5Y','ŞEFLER, EN KÖTÜ YEMEKLERİ DENİYOR!','Tepkikolik / Post-Prodüksiyon',this)">ŞEFLER EN KÖTÜ YEMEKLERİ DENİYOR!</div>
-                        <div class="clip t-youtube" data-tooltip="Literat TV / Kurgu" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('5bAgW5dI6xc','SPORCULAR, DİZİLERDEKİ SPOR SAHNELERİNİ İZLİYOR!','Literat TV / Kurgu',this)">SPORCULAR SPOR SAHNELERİNİ İZLİYOR!</div>
                         <div class="clip t-youtube" data-tooltip="Tepkikolik / Kurgu" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('kaghSsS0-R8','KOMEDYENLERİN EEEEN ÇOK İZLENEN VİDEOLARI!','Tepkikolik / Kurgu',this)">KOMEDYENLERİN EN ÇOK İZLENEN VİDEOLARI!</div>
                         <div class="clip t-youtube" data-tooltip="Tepkikolik / 10. Yıl Özel" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('M8wMNMtrc8k','TEPKİKOLİK NASIL ÇEKİLİYOR? 10. YIL ÖZEL','Tepkikolik / Özel Prodüksiyon',this)">TEPKİKOLİK NASIL ÇEKİLİYOR?</div>
                         <div class="clip t-youtube" data-tooltip="Tepkikolik / Prodüksiyon" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('Gk9Kot9bML0','BU MÜZİK ALETLERİNİ İLK KEZ ÇALDILAR! w/ Kargo','Tepkikolik / Prodüksiyon',this)">MÜZİK ALETLERİNİ İLK KEZ ÇALDILAR!</div>
@@ -503,14 +558,29 @@
                         <div class="clip t-youtube" data-tooltip="Tepkikolik / Kurgu" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('PiCn6AH8FCI','KUMARHANE MÜDÜRÜ, TÜRK KUMARHANE SAHNELERİNİ İZLİYOR!','Tepkikolik / Kurgu',this)">KUMARHANE MÜDÜRÜ SAHNELERİ İZLİYOR!</div>
                         <div class="clip t-youtube" data-tooltip="Tepkikolik / Post-Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('g1KCuLO667o','ACİL TIP DOKTORU OYUNLARDAKİ YARALANMA SAHNELERİNİ İZLİYOR!','Tepkikolik / Post-Prodüksiyon',this)">ACİL TIP DOKTORU YARALANMA SAHNELERİ</div>
                         <div class="clip t-youtube" data-tooltip="Tepkikolik / Kurgu" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('hPM-5mSr9l8','TARİHÇİ ATATÜRK SAHNELERİNİ İZLİYOR! w/ Selim Erdoğan','Tepkikolik / Kurgu',this)">TARİHÇİ ATATÜRK SAHNELERİNİ İZLİYOR!</div>
+                    </div>
+                    <div class="flex items-center gap-[3px]">
+                        <div class="track-label"><span class="tl-name">V1</span><span class="tl-sub">Diğer</span></div>
+                        <div class="clip t-youtube" data-tooltip="Literat TV / Kurgu" data-meta="Youtube İçerik|Dekor|Işık|Kamera|Ses" onclick="play('5bAgW5dI6xc','SPORCULAR, DİZİLERDEKİ SPOR SAHNELERİNİ İZLİYOR!','Literat TV / Kurgu',this)">SPORCULAR SPOR SAHNELERİNİ İZLİYOR!</div>
                         <div class="clip t-youtube" data-tooltip="Literat / Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('lXLCfBTsELs','ÇOCUKLAR SAĞIRA SORUYOR! w/ Melek Morgil','Literat / Prodüksiyon + Kurgu',this)">ÇOCUKLAR SAĞIRA SORUYOR!</div>
                         <div class="clip t-youtube" data-tooltip="Orkun Işıtmak / Post-Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('HQceVi0uUgo','150 KİLO KARPUZ YEDİK! @orkunisitmak','Orkun Işıtmak / Post-Prodüksiyon',this)">150 KİLO KARPUZ YEDİK!</div>
                         <div class="clip t-youtube" data-tooltip="Post-Prodüksiyon" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('iI--9EwRVEU','30 KİLO YOĞURT YEDİK! @1453harunn','Post-Prodüksiyon',this)">30 KİLO YOĞURT YEDİK!</div>
                     </div>
+                    <div class="flex items-center gap-[3px] pt-1">
+                        <div class="track-label" style="opacity:0.3"><span class="tl-name">A1</span></div>
+                        <div class="h-[5px] rounded-sm flex-1 max-w-[4000px]" style="background: repeating-linear-gradient(90deg, rgba(34,197,94,0.12) 0px, rgba(34,197,94,0.22) 2px, rgba(34,197,94,0.06) 4px);"></div>
+                    </div>
+                    </div>
+                </div>
+            </div>
 
-                    <!-- V1: Influencer -->
+            <!-- Influencer Sequence -->
+            <div class="seq-content scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" id="seq-influencer" style="background: #181818; display:none;">
+                <div class="playhead"></div>
+                <div class="timeline-content-wrapper">
+                    <div class="space-y-[5px]" style="min-width: 2400px; margin-left: 60px;">
                     <div class="flex items-center gap-[3px]">
-                        <div class="track-label"><span class="tl-name">V1</span><span class="tl-sub">Influencer</span></div>
+                        <div class="track-label"><span class="tl-name">V1</span><span class="tl-sub">Creator St.</span></div>
                         <div class="clip t-social" data-tooltip="Creator Station / Dikey Kurgu" data-meta="Dekor|Işık|Kamera Kurulumu|~Farklı platformlarda toplamda 10m+ görüntülenme" onclick="play('LtEmjQUntb8','devamettikce | SM İçerik','Creator Station / Dikey Kurgu / Shorts',this)">devamettikce | SM İçerik</div>
                         <div class="clip t-social" data-tooltip="Post-Prodüksiyon / Vlog" data-meta="Dekor|Işık|Kamera|Kurgu|Renk" onclick="play('UXaVPOiEZbg','Merve Özkaynak | Yurtdışı Alışveriş','Creator Station / Post-Prodüksiyon',this)">Merve Özkaynak | Yurtdışı Alışveriş</div>
                         <div class="clip t-social" data-tooltip="Social Media / Influencer" data-meta="Dekor|Işık|Kamera|Kurgu|Renk|~Instagram 3,5m+ izlenme" onclick="play('HgvzNM5JrCg','Merve Özkaynak x Benefit','Creator Station / Social Media',this)">Merve Özkaynak x Benefit</div>
@@ -520,20 +590,10 @@
                         <div class="clip t-social" data-tooltip="Reels / Kurgu" data-meta="Sosyal Medya İçerik|Dekor|Kamera|Işık|Ses|Renk|~Instagram 600B+ görüntülenme" onclick="play('PBn9yjOaBHA','Merve Özkaynak | Parfüm Önerileri','Creator Station / Reels',this)">Merve Özkaynak | Parfüm Önerileri</div>
                         <div class="clip t-social" data-tooltip="Reels / Kurgu" data-meta="Sosyal Medya İçerik|Dekor|Kamera|Işık|Ses|Renk|~Instagram 1M+ görüntülenme" onclick="play('I6fLRyLZqFc','Merve Özkaynak | Favori Gözlükler','Creator Station / Reels',this)">Merve Özkaynak | Favori Gözlükler</div>
                         <div class="clip t-social" data-tooltip="Kampanya Filmi" data-meta="Güzellik Merkezi Bayram Kampanyası|Çekim|Kurgu|Renk|Ses" onclick="play('Z7dWItmgtgI','Nil Tellioğlu - Bayram Kampanyası','Creator Station / Kampanya',this)">Nil Tellioğlu - Bayram Kampanyası</div>
-                        <div class="clip t-brand" data-tooltip="United World / Gayrimenkul" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('au-8FLeyo8s','United World | Deniz Manzaralı Daireler','United World / Real Estate / Alanya',this)">United World - Sea View</div>
-                        <div class="clip t-brand" data-tooltip="United World / Gayrimenkul" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('PcpV__ZjXaw','United World | Luxury Villa Döşemealtı','United World / Real Estate / Antalya',this)">United World - Villa Döşemealtı</div>
-                        <div class="clip t-brand" data-tooltip="United World / Gayrimenkul" data-meta="Youtube İçerik|Işık|Kamera|Ses|Kurgu" onclick="play('APEhFR-iCa8','United World | Villa Antalya Döşemealtı','United World / Real Estate / Antalya',this)">United World - Villa Antalya</div>
                     </div>
-
-                    <!-- A1 -->
                     <div class="flex items-center gap-[3px] pt-1">
                         <div class="track-label" style="opacity:0.3"><span class="tl-name">A1</span></div>
-                        <div class="h-[5px] rounded-sm flex-1 max-w-[6800px]" style="background: repeating-linear-gradient(90deg, rgba(34,197,94,0.12) 0px, rgba(34,197,94,0.22) 2px, rgba(34,197,94,0.06) 4px);"></div>
-                    </div>
-                    <!-- A2 -->
-                    <div class="flex items-center gap-[3px]">
-                        <div class="track-label" style="opacity:0.2"><span class="tl-name">A2</span></div>
-                        <div class="h-[3px] rounded-sm flex-1 max-w-[6800px]" style="background: repeating-linear-gradient(90deg, rgba(34,197,94,0.06) 0px, rgba(34,197,94,0.12) 2px, rgba(34,197,94,0.03) 4px);"></div>
+                        <div class="h-[5px] rounded-sm flex-1 max-w-[3000px]" style="background: repeating-linear-gradient(90deg, rgba(34,197,94,0.12) 0px, rgba(34,197,94,0.22) 2px, rgba(34,197,94,0.06) 4px);"></div>
                     </div>
                     </div>
                 </div>
@@ -548,7 +608,7 @@
             <span>Sequence: 1920x1080 | 23.976fps</span>
         </div>
         <div class="flex gap-4">
-            <span>41 items in timeline</span>
+            <span>4 sequences | 41 items</span>
             <span>H.264 High Profile</span>
         </div>
     </div>
@@ -799,10 +859,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.clip').forEach((el, i) => {
-                el.dataset.index = i;
-                allClips.push(el);
-                // Extract video ID from onclick and add thumbnail
+            // Add thumbnails to all clips across all sequences
+            document.querySelectorAll('.clip').forEach((el) => {
                 const onclick = el.getAttribute('onclick');
                 const match = onclick && onclick.match(/play\('([^']+)'/);
                 if (match) {
@@ -813,6 +871,12 @@
                     img.loading = 'lazy';
                     el.insertBefore(img, el.firstChild);
                 }
+            });
+
+            // Index only the default active sequence clips
+            document.getElementById('seq-marka').querySelectorAll('.clip').forEach((el, i) => {
+                el.dataset.index = i;
+                allClips.push(el);
             });
 
             // Always start at default zoom
@@ -947,16 +1011,38 @@
             const clamped = Math.min(500, Math.max(180, w));
             ecPanel.style.width = clamped + 'px';
         });
-        // Mouse wheel on timeline: pinch/ctrl+wheel = zoom, normal wheel = horizontal scroll
-        document.querySelector('.scroll-area').addEventListener('wheel', (e) => {
-            e.preventDefault();
-            if (e.ctrlKey || e.metaKey) {
-                const delta = e.deltaY > 0 ? -0.1 : 0.1;
-                setZoom(currentZoom + delta);
-            } else {
-                e.currentTarget.scrollLeft += e.deltaY;
-            }
-        }, { passive: false });
+        // Mouse wheel on all sequence scroll areas
+        document.querySelectorAll('.seq-content').forEach(area => {
+            area.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                if (e.ctrlKey || e.metaKey) {
+                    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                    setZoom(currentZoom + delta);
+                } else {
+                    e.currentTarget.scrollLeft += e.deltaY;
+                }
+            }, { passive: false });
+        });
+
+        const seqNames = { marka: 'Marka_Sequence', medikal: 'Medikal_Sequence', youtube: 'YouTube_Sequence', influencer: 'Influencer_Sequence' };
+        const seqCounts = { marka: '11 clips', medikal: '5 clips', youtube: '16 clips', influencer: '9 clips' };
+
+        function switchSeq(name, tabEl) {
+            document.querySelectorAll('.seq-tab').forEach(t => t.classList.remove('active'));
+            tabEl.classList.add('active');
+            document.querySelectorAll('.seq-content').forEach(s => s.style.display = 'none');
+            document.getElementById('seq-' + name).style.display = 'block';
+            document.getElementById('seqTitle').textContent = seqNames[name];
+            document.getElementById('seqClipCount').textContent = seqCounts[name];
+
+            // Re-index clips for navigation
+            allClips.length = 0;
+            currentClipIndex = -1;
+            document.getElementById('seq-' + name).querySelectorAll('.clip').forEach((el, i) => {
+                el.dataset.index = i;
+                allClips.push(el);
+            });
+        }
 
         function sendTeklif(e) {
             e.preventDefault();
