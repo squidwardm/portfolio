@@ -90,9 +90,9 @@
             height: 20px; background: #1a1a1a; border-bottom: 1px solid #2a2a2a;
             display: flex; align-items: flex-end; padding-left: 60px;
             font-size: 8px; color: #444; user-select: none; flex-shrink: 0;
-            overflow: hidden;
+            overflow: hidden; flex-wrap: nowrap;
         }
-        .ruler-mark { border-left: 1px solid #2a2a2a; padding: 0 6px 2px; min-width: 70px; }
+        .ruler-mark { border-left: 1px solid #2a2a2a; padding: 0 6px 2px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 
         .contact-link { color: #666; transition: color 0.15s; text-decoration: none; }
         .contact-link:hover { color: #8ab4f8; }
@@ -721,10 +721,7 @@
         }
 
         function updateRulerMarks(zoomLevel) {
-            const marks = document.querySelectorAll('.ruler-mark');
-            marks.forEach(mark => {
-                mark.style.minWidth = (70 * zoomLevel) + 'px';
-            });
+            // Ruler marks are now flex-based, no min-width needed
         }
 
         function updateZoomDisplay() {
