@@ -638,6 +638,7 @@
                     <div class="guide-dot" style="width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.5); transition:all 0.3s;"></div>
                     <div class="guide-dot" style="width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.15); transition:all 0.3s;"></div>
                     <div class="guide-dot" style="width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.15); transition:all 0.3s;"></div>
+                    <div class="guide-dot" style="width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.15); transition:all 0.3s;"></div>
                 </div>
                 <button onclick="closeGuide()" style="background:none; border:none; color:rgba(255,255,255,0.3); font-size:14px; cursor:pointer; padding:0; line-height:1;">&times;</button>
             </div>
@@ -747,20 +748,26 @@
         const guideSteps = [
             {
                 target: '#timelinePanel',
+                title: 'Selamlar, Hoş Geldiniz! :)',
+                desc: 'Bu sayfayı yukarıdaki <span style="color:rgba(255,255,255,0.7)">Help</span> sekmesinden dilediğiniz zaman kolaylıkla tekrar açabilirsiniz.<br><br>Size ufak bir site turu yaptırmak istiyorum.<br><br><span style="color:rgba(255,255,255,0.5)">Site hakkında geri bildirimde bulunmayı lütfen unutmayın.</span>',
+                pos: 'top'
+            },
+            {
+                target: '#timelinePanel',
                 title: 'Sekans',
-                desc: '41 video klip bu timeline\'da sizi bekliyor. Her renk bir kategori: <span style="color:#6384ff">Marka</span>, <span style="color:#f5a623">Medikal</span>, <span style="color:#7dce3e">YouTube</span> ve <span style="color:#c47aee">Influencer</span>. Kliplere tıklayarak videoları izleyebilirsiniz.',
+                desc: 'Alt taraftaki sekans kısmında örnek videoları görebilirsiniz.<br><br>4 sekanstan dilediğiniz kategorideki videoları izleyebilirsiniz.<br><br>Sekansı yakınlaştırıp uzaklaştırabilir, boyutunu ayarlayabilirsiniz.',
                 pos: 'top'
             },
             {
                 target: '#ecPanel',
                 title: 'Hakkımda',
-                desc: 'Bu panelde beni daha yakından tanıyabilirsiniz. <span style="color:rgba(255,255,255,0.7)">Teknik</span> becerilerim, <span style="color:rgba(255,255,255,0.7)">Deneyim</span> bilgilerim ve klip detayları burada.',
+                desc: 'Bu panelde beni daha yakından tanıyabilirsiniz. <span style="color:rgba(255,255,255,0.7)">Teknik</span> becerilerim, <span style="color:rgba(255,255,255,0.7)">Deneyim</span> bilgilerim ve klip detayları burada.<br><br>Aynı zamanda bir <span style="color:rgba(255,255,255,0.7)">fiyat teklifi</span> alabilir ya da <span style="color:rgba(255,255,255,0.7)">Klip</span> sekmesine tıklayarak o video hakkında teknik bilgiler edinebilirsiniz.',
                 pos: 'left'
             },
             {
                 target: '.monitor',
                 title: 'Videolar',
-                desc: 'Sekanstan sectiginiz videolar burada oynar. Klavye <span style="color:rgba(255,255,255,0.7)">ok tusları</span> ile klipler arasi gecis yapabilirsiniz.',
+                desc: 'Sekanstan seçtiğiniz videolar burada oynar.',
                 pos: 'bottom'
             }
         ];
