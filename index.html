@@ -395,14 +395,8 @@
                             <div class="text-gray-500 text-[9px] mt-1">Projenizi anlatın, size en kısa sürede dönüş yapayım.</div>
                         </div>
 
-                        <form class="teklif-form space-y-3" action="https://formsubmit.co/mustafaozmenn9@gmail.com" method="POST" id="teklifForm">
-                            <!-- FormSubmit config -->
-                            <input type="hidden" name="_subject" value="Yeni Teklif Talebi - Portfolio">
-                            <input type="hidden" name="_captcha" value="false">
-                            <input type="hidden" name="_template" value="table">
-                            <input type="hidden" name="_next" value="https://squidwardm.github.io">
+                        <form class="teklif-form space-y-3" id="teklifForm" onsubmit="return sendTeklif(event)">
                             <input type="text" name="_honey" style="display:none">
-
                             <div>
                                 <label for="teklifEmail">E-posta Adresiniz</label>
                                 <input type="email" id="teklifEmail" name="email" placeholder="ornek@mail.com" required>
@@ -415,7 +409,7 @@
                                 <label for="teklifMsg">Mesajınız</label>
                                 <textarea id="teklifMsg" name="mesaj" rows="5" placeholder="Projenizi kısaca anlatın... (Konu, süre, bütçe vs.)" required></textarea>
                             </div>
-                            <button type="submit" class="teklif-submit">
+                            <button type="submit" class="teklif-submit" id="teklifBtn">
                                 <i class="fas fa-paper-plane mr-1 text-[8px]"></i> Gönder
                             </button>
                         </form>
@@ -967,6 +961,32 @@
             const clamped = Math.min(500, Math.max(180, w));
             ecPanel.style.width = clamped + 'px';
         });
+        function sendTeklif(e) {
+            e.preventDefault();
+            const form = document.getElementById('teklifForm');
+            const btn = document.getElementById('teklifBtn');
+            const data = new FormData(form);
+            data.append('_subject', 'Yeni Teklif Talebi - Portfolio');
+            data.append('_captcha', 'false');
+            data.append('_template', 'table');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1 text-[8px]"></i> Gönderiliyor...';
+
+            fetch('https://formsubmit.co/ajax/mustafaozmenn9@gmail.com', {
+                method: 'POST',
+                headers: { 'Accept': 'application/json' },
+                body: data
+            }).then(r => r.json()).then(() => {
+                form.style.display = 'none';
+                document.getElementById('teklifSuccess').classList.add('show');
+            }).catch(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane mr-1 text-[8px]"></i> Gönder';
+                alert('Gönderilemedi. Lütfen tekrar deneyin.');
+            });
+            return false;
+        }
     </script>
 </body>
 </html>
