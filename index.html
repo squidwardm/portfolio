@@ -136,6 +136,7 @@
 
             /* Menu bar compact */
             #menuLinks { display: none; }
+            #helpMobile { display: inline !important; }
 
             /* Hide EC resize handle on mobile */
             #ecResizeHandle { display: none !important; }
@@ -268,12 +269,12 @@
 <body>
 
     <!-- Menu Bar -->
-    <div class="bg-[#1e1e1e] text-[10.5px] px-3 py-[5px] flex items-center gap-1 border-b border-black select-none" style="flex-shrink:0">
+    <div class="bg-[#1e1e1e] text-[10.5px] px-3 py-[5px] flex items-center gap-1 border-b border-black select-none" style="flex-shrink:0; flex-wrap:wrap; overflow:hidden;">
         <div class="flex items-center gap-2 mr-4">
             <span class="text-white font-bold bg-[#4f46e5] px-[6px] py-[1px] rounded text-[9px] tracking-tight">Pr</span>
             <span class="text-gray-300 font-medium tracking-wide text-[10px]">Mustafa_Ozmen_Portfolio_2026.prproj</span>
         </div>
-        <div id="menuLinks" class="flex gap-4 text-gray-500">
+        <div id="menuLinks" class="flex gap-4 text-gray-500" style="flex-shrink:0;">
             <span class="hover:text-gray-200 cursor-pointer">File</span>
             <span class="hover:text-gray-200 cursor-pointer">Edit</span>
             <span class="hover:text-gray-200 cursor-pointer">Clip</span>
@@ -283,7 +284,8 @@
             <span class="hover:text-gray-200 cursor-pointer">Window</span>
             <span class="cursor-pointer" style="color:#4f7fff;" onmouseover="this.style.color='#7ba3ff'" onmouseout="this.style.color='#4f7fff'" onclick="guideStep=0; showGuide(); guideNav(0);">Help</span>
         </div>
-        <div class="ml-auto flex items-center gap-4 text-gray-600 text-[9px]">
+        <div class="flex items-center gap-4 text-gray-600 text-[9px]" style="margin-left:auto; flex-shrink:0;">
+            <span id="helpMobile" class="cursor-pointer" style="color:#4f7fff; display:none;" onclick="guideStep=0; showGuide(); guideNav(0);"><i class="fas fa-question-circle mr-1"></i>Help</span>
             <a href="mailto:mustafaozmenn9@gmail.com" class="contact-link"><i class="fas fa-envelope mr-1"></i>mustafaozmenn9@gmail.com</a>
             <a href="https://www.instagram.com/mustafaozmen_" target="_blank" class="contact-link"><i class="fab fa-instagram mr-1"></i>Instagram</a>
         </div>
@@ -784,7 +786,7 @@
         const guideSteps = [
             {
                 target: '#timelinePanel',
-                title: 'Selamlar, Hoş Geldiniz! :)',
+                title: 'Selamlar, Hoş Geldiniz!',
                 desc: 'Bu sayfayı yukarıdaki <span style="color:rgba(255,255,255,0.7)">Help</span> sekmesinden dilediğiniz zaman kolaylıkla tekrar açabilirsiniz.<br><br>Size ufak bir site turu yaptırmak istiyorum.<br><br><span style="color:rgba(255,255,255,0.5)">Site hakkında geri bildirimde bulunmayı lütfen unutmayın.</span>',
                 pos: 'top'
             },
