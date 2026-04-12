@@ -107,11 +107,11 @@
         .legend-dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
 
         @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-up { animation: fadeUp 0.3s ease-out; }
+        .fade-up { animation: fadeUp 0.3s ease-out forwards; }
 
         .ec-tabs { display: flex; flex-shrink: 0; border-bottom: 1px solid #0d0d0d; }
         .ec-tab {
-            flex: 1; text-align: center; padding: 5px 1px; font-size: 7px; font-weight: 600;
+            flex: 1; text-align: center; padding: 5px 1px; font-size: 8px; font-weight: 600;
             text-transform: uppercase; letter-spacing: 0.3px; color: #bbb;
             cursor: pointer; transition: all 0.15s; position: relative; background: #272727;
             white-space: nowrap; overflow: hidden; min-width: 0;
@@ -177,7 +177,7 @@
 
         /* Sequence Tabs */
         .seq-tab {
-            padding: 5px 12px; font-size: 8px; font-weight: 600; color: #666;
+            padding: 5px 12px; font-size: 10px; font-weight: 600; color: #666;
             cursor: pointer; transition: all 0.15s; position: relative;
             display: flex; align-items: center; gap: 4px; border-right: 1px solid #0d0d0d;
         }
@@ -347,7 +347,7 @@
                         </div>
                     </div>
                     <!-- About -->
-                    <div id="ec-about" class="p-4 text-[10px] leading-[1.7] text-gray-300 fade-up">
+                    <div id="ec-about" class="p-4 text-[12px] leading-[1.7] text-gray-300 fade-up">
                         <p class="mb-2"><strong class="text-white text-[11px]">Selamlar,</strong></p>
                         <p class="mb-2">Lise yıllarımda hobi olarak başladığım meslek hayatıma 2016 yılında profesyonelliğe ilk adımlarımı attım. <span class="text-gray-100">Erciyes Üniversitesi İletişim Fakültesi</span> mezunuyum.</p>
                         <p class="mb-2">2016'da YouTube kanalı açtım, <span class="text-blue-400 font-semibold">2M+</span> görüntülenme aldım. Stajımı <span class="text-gray-100">BaBaLa TV</span>'de yaptım.</p>
@@ -356,7 +356,7 @@
                         <p>Freelancer olarak yeni projelere her zaman açığım.</p>
                     </div>
                     <!-- Skills -->
-                    <div id="ec-skills" class="p-4 text-[10px] fade-up" style="display:none">
+                    <div id="ec-skills" class="p-4 text-[12px] fade-up" style="display:none">
                         <div class="text-[8px] text-gray-500 font-bold uppercase mb-2 tracking-wider">Kamera</div>
                         <div class="space-y-1 mb-3">
                             <div class="bg-[#1e1e1e] rounded px-2 py-[5px] text-gray-300 text-[9px]"><i class="fas fa-video text-blue-400 mr-1 text-[7px]"></i>Sony FX Serisi</div>
@@ -411,7 +411,7 @@
                         </div>
                     </div>
                     <!-- Teklif Al -->
-                    <div id="ec-teklif" class="p-4 text-[10px] fade-up" style="display:none">
+                    <div id="ec-teklif" class="p-4 text-[12px] fade-up" style="display:none">
                         <div class="text-center mb-3">
                             <i class="fas fa-envelope-open-text text-blue-400 text-[18px] mb-2" style="display:block"></i>
                             <div class="text-white font-semibold text-[13px]">Teklif Alın</div>
@@ -442,8 +442,9 @@
                             <div class="text-white font-semibold text-[12px]">Mesajınız Gönderildi!</div>
                             <div class="text-gray-400 text-[9px] mt-1">En kısa sürede dönüş yapacağım.</div>
                         </div>
+                    </div>
                     <!-- Geri Bildirim -->
-                    <div id="ec-feedback" class="p-4 text-[10px] fade-up" style="display:none">
+                    <div id="ec-feedback" class="p-4 text-[12px] fade-up" style="display:none">
                         <div class="text-center mb-3">
                             <i class="fas fa-comment-dots text-purple-400 text-[18px] mb-2" style="display:block"></i>
                             <div class="text-white font-semibold text-[13px]">Geri Bildirim</div>
@@ -498,26 +499,9 @@
 
         <!-- Timeline -->
         <div id="timelinePanel" class="panel" style="flex-shrink: 0;">
-            <div class="panel-header" style="padding-bottom:0;">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-film text-[8px] text-blue-400"></i>
-                    <span id="seqTitle">Marka_Sequence</span>
-                </div>
-                <div class="flex items-center gap-4">
-                    <span id="seqClipCount" class="text-[8px] text-gray-600">11 clips</span>
-                    <i class="fas fa-magnet text-[8px] text-blue-400 opacity-50" title="Snap"></i>
-                    <div id="zoomControls">
-                        <button id="zoomOutBtn" title="Zoom Out"><i class="fas fa-minus"></i></button>
-                        <span id="zoomLevel">100%</span>
-                        <button id="zoomInBtn" title="Zoom In"><i class="fas fa-plus"></i></button>
-                        <button id="zoomResetBtn" title="Reset"><i class="fas fa-redo-alt"></i></button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sequence Tabs -->
-            <div class="flex border-b border-[#0d0d0d]" style="background:#1e1e1e;">
-                <div class="seq-tab active" data-seq="marka" onclick="switchSeq('marka',this)">
+            <!-- Sequence Tabs + Zoom Controls -->
+            <div class="flex border-b border-[#0d0d0d] items-center" style="background:#1e1e1e;">
+                <div class="seq-tab" data-seq="marka" onclick="switchSeq('marka',this)">
                     <span class="legend-dot" style="background:#4f7fff"></span> Marka
                 </div>
                 <div class="seq-tab" data-seq="medikal" onclick="switchSeq('medikal',this)">
@@ -526,8 +510,17 @@
                 <div class="seq-tab" data-seq="youtube" onclick="switchSeq('youtube',this)">
                     <span class="legend-dot" style="background:#6dbe30"></span> YouTube
                 </div>
-                <div class="seq-tab" data-seq="influencer" onclick="switchSeq('influencer',this)">
+                <div class="seq-tab active" data-seq="influencer" onclick="switchSeq('influencer',this)">
                     <span class="legend-dot" style="background:#c47aee"></span> Influencer ve Marka İşb.
+                </div>
+                <div style="margin-left:auto; display:flex; align-items:center; gap:2px; padding-right:8px;">
+                    <span id="seqClipCount" class="text-[8px] text-gray-600" style="margin-right:6px;">11 clips</span>
+                    <div id="zoomControls">
+                        <button id="zoomOutBtn" title="Zoom Out"><i class="fas fa-minus"></i></button>
+                        <span id="zoomLevel">100%</span>
+                        <button id="zoomInBtn" title="Zoom In"><i class="fas fa-plus"></i></button>
+                        <button id="zoomResetBtn" title="Reset"><i class="fas fa-redo-alt"></i></button>
+                    </div>
                 </div>
             </div>
 
@@ -538,7 +531,7 @@
             </div>
 
             <!-- Marka Sequence -->
-            <div class="seq-content scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" id="seq-marka" style="background: #181818; display:flex;">
+            <div class="seq-content scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" id="seq-marka" style="background: #181818; display:none;">
                 <div class="playhead"></div>
                 <div class="timeline-content-wrapper">
                     <div class="space-y-[5px]" style="min-width: 2400px; margin-left: 60px;">
@@ -624,7 +617,7 @@
             </div>
 
             <!-- Influencer Sequence -->
-            <div class="seq-content scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" id="seq-influencer" style="background: #181818; display:none;">
+            <div class="seq-content scroll-area overflow-x-auto overflow-y-hidden py-2 px-3 relative" id="seq-influencer" style="background: #181818; display:flex;">
                 <div class="playhead"></div>
                 <div class="timeline-content-wrapper">
                     <div class="space-y-[5px]" style="min-width: 2400px; margin-left: 60px;">
@@ -930,7 +923,7 @@
             });
 
             // Index only the default active sequence clips
-            document.getElementById('seq-marka').querySelectorAll('.clip').forEach((el, i) => {
+            document.getElementById('seq-influencer').querySelectorAll('.clip').forEach((el, i) => {
                 el.dataset.index = i;
                 allClips.push(el);
             });
@@ -996,7 +989,15 @@
 
         function switchEC(name, el) {
             ['clip', 'about', 'skills', 'exp', 'teklif', 'feedback'].forEach(t => {
-                document.getElementById('ec-' + t).style.display = t === name ? 'block' : 'none';
+                const panel = document.getElementById('ec-' + t);
+                if (t === name) {
+                    panel.style.display = 'block';
+                    panel.style.animation = 'none';
+                    panel.offsetHeight;
+                    panel.style.animation = '';
+                } else {
+                    panel.style.display = 'none';
+                }
             });
             document.querySelectorAll('.ec-tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
@@ -1080,7 +1081,7 @@
             }, { passive: false });
         });
 
-        const seqNames = { marka: 'Marka_Sequence', medikal: 'Medikal_Sequence', youtube: 'YouTube_Sequence', influencer: 'Influencer_ve_Marka_İşb_Sequence' };
+
         const seqCounts = { marka: '10 clips', medikal: '5 clips', youtube: '17 clips', influencer: '11 clips' };
 
         function switchSeq(name, tabEl) {
@@ -1088,7 +1089,6 @@
             tabEl.classList.add('active');
             document.querySelectorAll('.seq-content').forEach(s => s.style.display = 'none');
             document.getElementById('seq-' + name).style.display = 'flex';
-            document.getElementById('seqTitle').textContent = seqNames[name];
             document.getElementById('seqClipCount').textContent = seqCounts[name];
 
             // Re-index clips for navigation
