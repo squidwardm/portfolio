@@ -146,6 +146,28 @@
             #ecPanel .ec-body { padding: 0; }
             #ecPanel #ec-about { padding: 8px 12px; font-size: 9px; line-height: 1.5; }
             #ecPanel #ec-about p { margin-bottom: 4px; }
+            #ecPanel .panel-header { cursor: pointer; }
+            #ecPanel.collapsed { min-height: 0; max-height: none; }
+            #ecPanel.collapsed .ec-tabs,
+            #ecPanel.collapsed .ec-body { display: none; }
+            #ecPanel.collapsed .panel-header::after {
+                content: '▼'; float: right; font-size: 7px; opacity: 0.6;
+            }
+            #ecPanel:not(.collapsed) .panel-header::after {
+                content: '▲'; float: right; font-size: 7px; opacity: 0.6;
+            }
+
+            /* Compact sequence tabs on mobile */
+            .seq-tab {
+                padding: 4px 6px !important;
+                font-size: 8px !important;
+                white-space: nowrap;
+                flex-shrink: 1;
+                min-width: 0;
+            }
+            .seq-tab .legend-dot { width: 5px; height: 5px; }
+            #seqClipCount { display: none; }
+            #zoomControls { transform: scale(0.85); transform-origin: right center; }
 
             /* Timeline */
             #timelinePanel { height: auto !important; min-height: 150px; }
@@ -324,7 +346,7 @@
 
             <!-- Effect Controls (tabbed) -->
             <div id="ecPanel" class="panel" style="flex: 1; min-width: 200px;">
-                <div class="panel-header" style="padding: 3px 8px;">
+                <div class="panel-header" style="padding: 3px 8px;" onclick="toggleEcPanel()">
                     <span style="font-size: 8px;">Effect Controls</span>
                 </div>
                 <div class="ec-tabs">
@@ -987,6 +1009,11 @@
         }
         function nextClip() {
             if (currentClipIndex < allClips.length - 1) { currentClipIndex++; allClips[currentClipIndex].click(); allClips[currentClipIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); }
+        }
+
+        function toggleEcPanel() {
+            if (window.innerWidth > 768) return;
+            document.getElementById('ecPanel').classList.toggle('collapsed');
         }
 
         function switchEC(name, el) {
