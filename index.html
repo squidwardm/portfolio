@@ -192,9 +192,25 @@
                 height: 100%;
             }
 
-            /* Clips wider on mobile for touch */
-            .clip { height: 32px; font-size: 9px; padding: 0 8px; max-width: none !important; }
-            .clip img.clip-thumb { width: 36px; height: 22px; }
+            /* Clips taller on mobile with bigger thumbnails */
+            .clip {
+                min-height: 58px !important;
+                font-size: 10px;
+                padding: 6px 8px;
+                gap: 8px;
+                width: 150px !important;
+                max-width: 150px !important;
+                min-width: 150px !important;
+                flex: 0 0 150px !important;
+            }
+            .clip img.clip-thumb {
+                width: 64px !important;
+                height: 36px !important;
+                opacity: 1;
+                border-radius: 3px;
+            }
+            /* Allow text to wrap for longer titles */
+            .clip { white-space: normal !important; line-height: 1.2; }
 
             /* Bottom nav - Rush style */
             .rush-nav { display: flex !important; }
