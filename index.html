@@ -142,7 +142,7 @@
             #ecResizeHandle { display: none !important; }
 
             /* EC panel below monitor */
-            #ecPanel { width: 100% !important; flex: 0 0 auto !important; height: 32vh !important; max-height: 32vh !important; min-height: 0 !important; }
+            #ecPanel { width: 100% !important; flex: 0 0 auto !important; height: 190px !important; max-height: 190px !important; min-height: 0 !important; }
             #ecPanel .ec-body { padding: 0; }
             #ecPanel #ec-about { padding: 8px 12px; font-size: 9px; line-height: 1.5; }
             #ecPanel #ec-about p { margin-bottom: 4px; }
@@ -176,7 +176,21 @@
 
             /* topRow shrinks to content */
             #topRow { flex: 0 0 auto !important; }
-            #topRow > .panel:first-child { flex: 0 0 auto !important; height: 36vh !important; min-height: 180px; }
+            #topRow > .panel:first-child { flex: 0 0 auto !important; height: auto !important; min-height: 0; }
+            #topRow > .panel:first-child > .panel-header { flex-shrink: 0; }
+            #topRow > .panel:first-child > .flex-1 {
+                flex: 0 0 auto !important;
+                width: 100%;
+                aspect-ratio: 16/9;
+                max-height: 38vh;
+                padding: 0 !important;
+            }
+            #topRow > .panel:first-child .monitor {
+                max-height: 100%;
+                max-width: 100%;
+                width: 100%;
+                height: 100%;
+            }
 
             /* Clips wider on mobile for touch */
             .clip { height: 32px; font-size: 9px; padding: 0 8px; max-width: none !important; }
