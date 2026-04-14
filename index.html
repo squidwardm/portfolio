@@ -128,11 +128,11 @@
 
         /* Mobile - Premiere Rush style */
         @media (max-width: 768px) {
-            body { overflow: auto; height: auto; }
+            html, body { overflow: hidden; height: 100%; }
 
-            /* Main layout vertical */
-            #mainLayout { padding: 0; gap: 0; }
-            #topRow { flex-direction: column; min-height: auto; }
+            /* Main layout vertical - size to monitor+EC content */
+            #mainLayout { padding: 0 !important; gap: 0 !important; flex: 0 0 auto !important; min-height: 0; overflow: visible; }
+            #topRow { flex-direction: column !important; min-height: 0; flex: 0 0 auto !important; overflow: visible; }
 
             /* Menu bar compact */
             #menuLinks { display: none; }
@@ -142,12 +142,12 @@
             #ecResizeHandle { display: none !important; }
 
             /* EC panel below monitor */
-            #ecPanel { width: 100% !important; min-height: 140px; max-height: 220px; }
+            #ecPanel { width: 100% !important; flex: 0 0 auto !important; height: 32vh !important; max-height: 32vh !important; min-height: 0 !important; }
             #ecPanel .ec-body { padding: 0; }
             #ecPanel #ec-about { padding: 8px 12px; font-size: 9px; line-height: 1.5; }
             #ecPanel #ec-about p { margin-bottom: 4px; }
             #ecPanel .panel-header { cursor: pointer; }
-            #ecPanel.collapsed { min-height: 0; max-height: none; }
+            #ecPanel.collapsed { height: auto !important; max-height: none !important; flex: 0 0 auto !important; }
             #ecPanel.collapsed .ec-tabs,
             #ecPanel.collapsed .ec-body { display: none; }
             #ecPanel.collapsed .panel-header::after {
@@ -169,9 +169,14 @@
             #seqClipCount { display: none; }
             #zoomControls { transform: scale(0.85); transform-origin: right center; }
 
-            /* Timeline */
-            #timelinePanel { height: auto !important; min-height: 150px; }
+            /* Timeline - grow to fill remaining space */
+            #timelinePanel { height: auto !important; min-height: 140px; flex: 1 1 auto !important; overflow: hidden; display: flex; flex-direction: column; }
+            #timelinePanel .seq-content { flex: 1 1 auto; min-height: 0; }
             #resizeHandle { display: none; }
+
+            /* topRow shrinks to content */
+            #topRow { flex: 0 0 auto !important; }
+            #topRow > .panel:first-child { flex: 0 0 auto !important; height: 36vh !important; min-height: 180px; }
 
             /* Clips wider on mobile for touch */
             .clip { height: 32px; font-size: 9px; padding: 0 8px; max-width: none !important; }
@@ -821,7 +826,7 @@
             {
                 target: '#ecPanel',
                 title: 'Hakkımda',
-                desc: 'Bu panelde beni daha yakından tanıyabilirsiniz. <span style="color:rgba(255,255,255,0.7)">Teknik</span> becerilerim, <span style="color:rgba(255,255,255,0.7)">Deneyim</span> bilgilerim ve klip detayları burada.<br><br>Aynı zamanda bir <span style="color:rgba(255,255,255,0.7)">fiyat teklifi</span> alabilir ya da <span style="color:rgba(255,255,255,0.7)">Klip</span> sekmesine tıklayarak o video hakkında teknik bilgiler edinebilirsiniz.',
+                desc: 'Bu panelde beni daha yakından tanıyabilirsiniz. <span style="color:rgba(255,255,255,0.7)">Teknik</span> becerilerim, <span style="color:rgba(255,255,255,0.7)">Deneyim</span> bilgilerim ve klip detayları burada.<br><br>Aynı zamanda bir <span style="color:rgba(255,255,255,0.7)">fiyat teklifi</span> alabilir ya da <span style="color:rgba(255,255,255,0.7)">Klip</span> sekmesine tıklayarak o video hakkında teknik bilgiler edinebilirsiniz.<br><br><span style="color:rgba(255,255,255,0.5)">Mobilde <span style="color:#4f7fff">Effect Controls</span> başlığına dokunarak paneli açıp kapatabilirsiniz.</span>',
                 pos: 'left'
             },
             {
