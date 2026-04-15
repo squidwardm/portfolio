@@ -1092,11 +1092,11 @@
 
         document.addEventListener('mousemove', (e) => {
             if (!dragging) return;
-            const rect = container.getBoundingClientRect();
-            const y = e.clientY - rect.top;
-            const pct = ((rect.height - (y - 5)) / rect.height) * 100;
-            const clamped = Math.min(70, Math.max(15, pct));
-            timeline.style.height = clamped + '%';
+            const vh = window.innerHeight;
+            const newHeight = vh - e.clientY - 20; // 20px = status bar
+            const clamped = Math.min(vh * 0.75, Math.max(100, newHeight));
+            timeline.style.height = clamped + 'px';
+            timeline.style.flex = '0 0 ' + clamped + 'px';
         });
 
         document.addEventListener('mouseup', () => {
@@ -1129,7 +1129,8 @@
             if (!ecDragging) return;
             const rect = ecContainer.getBoundingClientRect();
             const w = rect.right - e.clientX;
-            const clamped = Math.min(500, Math.max(180, w));
+            const clamped = Math.min(600, Math.max(180, w));
+            ecPanel.style.flex = '0 0 ' + clamped + 'px';
             ecPanel.style.width = clamped + 'px';
         });
         // Mouse wheel on all sequence scroll areas
