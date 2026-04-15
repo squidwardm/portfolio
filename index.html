@@ -1077,61 +1077,65 @@
         }
 
 
-        // Timeline resize
+        // Timeline resize (pointer events with capture)
         const handle = document.getElementById('resizeHandle');
         const timeline = document.getElementById('timelinePanel');
-        const container = timeline.parentElement;
-        let dragging = false;
 
-        handle.addEventListener('mousedown', (e) => {
-            dragging = true;
+        handle.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            handle.setPointerCapture(e.pointerId);
             document.body.style.cursor = 'ns-resize';
             document.body.style.userSelect = 'none';
-            e.preventDefault();
-        });
 
-        document.addEventListener('mousemove', (e) => {
-            if (!dragging) return;
-            const vh = window.innerHeight;
-            const newHeight = vh - e.clientY - 20; // 20px = status bar
-            const clamped = Math.min(vh * 0.75, Math.max(100, newHeight));
-            timeline.style.height = clamped + 'px';
-            timeline.style.flex = '0 0 ' + clamped + 'px';
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (dragging) {
-                dragging = false;
+            const onMove = (ev) => {
+                const vh = window.innerHeight;
+                const newHeight = vh - ev.clientY - 20;
+                const clamped = Math.min(vh * 0.75, Math.max(100, newHeight));
+                timeline.style.height = clamped + 'px';
+                timeline.style.flex = '0 0 ' + clamped + 'px';
+            };
+            const onUp = () => {
+                handle.removeEventListener('pointermove', onMove);
+                handle.removeEventListener('pointerup', onUp);
+                handle.removeEventListener('pointercancel', onUp);
+                try { handle.releasePointerCapture(e.pointerId); } catch(_) {}
                 document.body.style.cursor = '';
                 document.body.style.userSelect = '';
-            }
-            if (ecDragging) {
-                ecDragging = false;
-                document.body.style.cursor = '';
-                document.body.style.userSelect = '';
-            }
+            };
+            handle.addEventListener('pointermove', onMove);
+            handle.addEventListener('pointerup', onUp);
+            handle.addEventListener('pointercancel', onUp);
         });
 
-        // EC panel resize
+        // EC panel resize (pointer events with capture)
         const ecHandle = document.getElementById('ecResizeHandle');
         const ecPanel = document.getElementById('ecPanel');
         const ecContainer = ecPanel.parentElement;
-        let ecDragging = false;
 
-        ecHandle.addEventListener('mousedown', (e) => {
-            ecDragging = true;
+        ecHandle.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            ecHandle.setPointerCapture(e.pointerId);
             document.body.style.cursor = 'ew-resize';
             document.body.style.userSelect = 'none';
-            e.preventDefault();
-        });
 
-        document.addEventListener('mousemove', (e) => {
-            if (!ecDragging) return;
-            const rect = ecContainer.getBoundingClientRect();
-            const w = rect.right - e.clientX;
-            const clamped = Math.min(600, Math.max(180, w));
-            ecPanel.style.flex = '0 0 ' + clamped + 'px';
-            ecPanel.style.width = clamped + 'px';
+            const onMove = (ev) => {
+                const rect = ecContainer.getBoundingClientRect();
+                const w = rect.right - ev.clientX;
+                const clamped = Math.min(600, Math.max(180, w));
+                ecPanel.style.flex = '0 0 ' + clamped + 'px';
+                ecPanel.style.width = clamped + 'px';
+            };
+            const onUp = () => {
+                ecHandle.removeEventListener('pointermove', onMove);
+                ecHandle.removeEventListener('pointerup', onUp);
+                ecHandle.removeEventListener('pointercancel', onUp);
+                try { ecHandle.releasePointerCapture(e.pointerId); } catch(_) {}
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            };
+            ecHandle.addEventListener('pointermove', onMove);
+            ecHandle.addEventListener('pointerup', onUp);
+            ecHandle.addEventListener('pointercancel', onUp);
         });
         // Mouse wheel on all sequence scroll areas
         document.querySelectorAll('.seq-content').forEach(area => {
