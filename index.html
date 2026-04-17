@@ -1086,8 +1086,12 @@
             handle.setPointerCapture(e.pointerId);
             document.body.style.cursor = 'ns-resize';
             document.body.style.userSelect = 'none';
+            const startY = e.clientY;
+            let dragging = false;
 
             const onMove = (ev) => {
+                if (!dragging && Math.abs(ev.clientY - startY) < 4) return;
+                dragging = true;
                 const vh = window.innerHeight;
                 const newHeight = vh - ev.clientY - 20;
                 const clamped = Math.min(vh * 0.75, Math.max(100, newHeight));
@@ -1111,19 +1115,30 @@
         const ecHandle = document.getElementById('ecResizeHandle');
         const ecPanel = document.getElementById('ecPanel');
         const ecContainer = ecPanel.parentElement;
+        const monitorPanel = document.querySelector('#topRow > .panel:first-child');
 
         ecHandle.addEventListener('pointerdown', (e) => {
             e.preventDefault();
             ecHandle.setPointerCapture(e.pointerId);
             document.body.style.cursor = 'ew-resize';
             document.body.style.userSelect = 'none';
+            const startX = e.clientX;
+            let dragging = false;
+            const startEcW = ecPanel.offsetWidth;
+            const startMonW = monitorPanel.offsetWidth;
 
             const onMove = (ev) => {
-                const rect = ecContainer.getBoundingClientRect();
-                const w = rect.right - ev.clientX;
-                const clamped = Math.min(600, Math.max(180, w));
-                ecPanel.style.flex = '0 0 ' + clamped + 'px';
-                ecPanel.style.width = clamped + 'px';
+                const dx = ev.clientX - startX;
+                if (!dragging && Math.abs(dx) < 4) return; // dead zone
+                dragging = true;
+                const totalW = startEcW + startMonW;
+                const minPanel = 180;
+                const newEcW = startEcW - dx;
+                const clampedEc = Math.min(totalW - minPanel, Math.max(minPanel, newEcW));
+                const clampedMon = totalW - clampedEc;
+                ecPanel.style.flex = '0 0 ' + clampedEc + 'px';
+                ecPanel.style.width = clampedEc + 'px';
+                monitorPanel.style.flex = '0 0 ' + clampedMon + 'px';
             };
             const onUp = () => {
                 ecHandle.removeEventListener('pointermove', onMove);
@@ -1148,6 +1163,28 @@
                     e.currentTarget.scrollLeft += e.deltaY + e.deltaX;
                 }
             }, { passive: false });
+        });
+
+        // Keyboard shortcuts for zoom: Ctrl/Cmd +/-, Ctrl/Cmd 0, Shift+Z
+        document.addEventListener('keydown', (e) => {
+            const tag = (e.target && e.target.tagName) || '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === '+' || e.key === '=') {
+                    e.preventDefault();
+                    zoomIn();
+                } else if (e.key === '-' || e.key === '_') {
+                    e.preventDefault();
+                    zoomOut();
+                } else if (e.key === '0') {
+                    e.preventDefault();
+                    resetZoom();
+                }
+            } else if (e.shiftKey && (e.key === 'Z' || e.key === 'z')) {
+                e.preventDefault();
+                resetZoom();
+            }
         });
 
 
